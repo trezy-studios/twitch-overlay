@@ -1,0 +1,19 @@
+{
+  "name": "twitch-overlay",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "next build",
+    "deploy": "now",
+    "dev": "next"
+  },
+  "dependencies": {
+    "@zeit/next-css": "^1.0.1",
+    "@zeit/next-sass": "^1.0.1",
+    "next": "^9.1.2",
+    "node-sass": "^4.13.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "twitch-js": "2.0.0-beta.33"
+  },
+  "license": "MIT"
+}

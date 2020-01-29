@@ -1,0 +1,14 @@
+{
+  "name": "trezy.com",
+  "version": 2,
+  "build": {
+    "env": {
+    }
+  },
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@now/next"
+    }
+  ]
+}
