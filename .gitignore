@@ -4,3 +4,4 @@
 yarn-error.log
 .next/
 node_modules/
+.now

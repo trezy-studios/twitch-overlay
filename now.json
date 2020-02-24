@@ -1,14 +1,7 @@
 {
-  "name": "trezy.com",
   "version": 2,
+  "scope": "trezy-studios",
   "build": {
-    "env": {
-    }
-  },
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@now/next"
-    }
-  ]
+    "env": {}
+  }
 }
