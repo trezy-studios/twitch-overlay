@@ -1,6 +1,6 @@
 // Style imports
 import '../scss/reset.scss'
-import '../scss/app.scss'
+import '../scss/legacy.scss'
 
 
 
@@ -73,9 +73,9 @@ let queryParams = null
 if (typeof window !== 'undefined') {
   queryParams = (location.search || '').replace(/^\?/, '').split('&').reduce((accumulator, pair) => {
     const [key, value] = pair.split('=')
-    
+
     accumulator[key] = value
-    
+
     return accumulator
   }, {
     channel: localStorage.getItem('channel'),
@@ -84,9 +84,9 @@ if (typeof window !== 'undefined') {
   })
 
   const {
-    api, 
+    api,
     chat,
-  } = twitchClient = new TwitchJs({ 
+  } = twitchClient = new TwitchJs({
     token: queryParams.twitch_access_token,
     username: 'TrezyCodes',
   })
@@ -104,7 +104,7 @@ const Chat = props => {
     isJoined,
     messages,
   } = props
-  
+
   return (
     <ol
       className="chat"
@@ -173,19 +173,19 @@ const Home = () => {
   const [isJoined, setIsJoined] = useState(false)
   const [events, setEvents] = useState(eventsContainer)
   const [messages, setMessages] = useState(messagesContainer)
-  
+
   const addEvent = event => {
     eventsContainer.push(event)
     setEvents([...eventsContainer])
   }
-  
+
   const handleBits = message => {
     const {
       bits,
       event,
       tags: { displayName },
     } = message
-    
+
     addEvent({
       id: performance.now(),
       bits,
@@ -193,27 +193,27 @@ const Home = () => {
       displayName,
     })
   }
-  
-  const handleCLEARCHAT = message => {    
-    const { 
+
+  const handleCLEARCHAT = message => {
+    const {
       event,
       username,
     } = message
-    
+
     if (event === 'USER_BANNED') {
       messagesContainer = messagesContainer.filter(message => message.username !== username)
       setMessages([...messagesContainer])
       console.log(`Removed messages from ${username}`)
     }
   }
-  
+
   const handleHost = message => {
     const {
       event,
       numberOfViewers,
       tags: { displayName },
     } = message
-    
+
     addEvent({
       hostType: event.split('/')[1],
       id: performance.now(),
@@ -222,7 +222,7 @@ const Home = () => {
       displayName,
     })
   }
-  
+
   const handleMessage = message => {
     const {
       message: body,
@@ -233,7 +233,7 @@ const Home = () => {
         username,
       },
     } = message
-    
+
     if (!blocklist.includes(displayName.toLowerCase())) {
       messagesContainer.push({
         avatar: Math.ceil(Math.random() * 6),
@@ -244,11 +244,11 @@ const Home = () => {
         userID,
         username,
       })
-      
+
       setMessages([...messagesContainer])
     }
   }
-  
+
   const handlePRIVMSG = message => {
     switch (event) {
       case 'CHEER':
@@ -265,7 +265,7 @@ const Home = () => {
         handleMessage(message)
     }
   }
-  
+
   const handleRaid = message => {
     const {
       parameters: {
@@ -273,59 +273,59 @@ const Home = () => {
         viewerCount: viewers,
       },
     } = message
-    
+
     addEvent({
       displayName,
       type: 'raid',
       viewers,
     })
   }
-  
+
   const handleResubscription = message => {
     console.log('handleResubscription', message)
     const {
       parameters: { cumulativeMonths: months },
       tags: { displayName },
     } = message
-    
+
     addEvent({
       displayName,
       type: 'resubscription',
       months,
     })
   }
-  
+
   const handleSubscription = message => {
     console.log('handleSubscription', message)
     const {
       tags: { displayName },
     } = message
-    
+
     addEvent({
       displayName,
       type: 'subscription',
     })
   }
-  
+
   const handleUSERNOTICE = message => {
     switch (message.event) {
       case 'RAID':
         handleRaid(message)
         break
-        
+
       case 'RESUBSCRIPTION':
         handleResubscription(message)
         break
-        
+
       case 'SUBSCRIPTION':
         handleSubscription(message)
         break
-        
+
       default:
         console.log('Unhandled USERNOTICE:', message)
     }
   }
-  
+
   // Connect to Twitch IRC servers
   useEffect(() => {
     (async () => {
@@ -333,7 +333,7 @@ const Home = () => {
       setIsConnected(true)
     })()
   }, [])
-  
+
   // Join the chat channel
   useEffect(() => {
     if (isConnected) {
@@ -347,16 +347,16 @@ const Home = () => {
       })()
     }
   }, [isConnected])
-  
+
   // Set up chat and events
-  useEffect(() => {    
+  useEffect(() => {
     if (isConnected && isJoined) {
-      twitchChat.on('*', message => { 
-        const { 
+      twitchChat.on('*', message => {
+        const {
           command,
           event,
         } = message
-        
+
         switch (command) {
           case 'PRIVMSG':
             handlePRIVMSG(message)
@@ -365,7 +365,7 @@ const Home = () => {
           case 'USERNOTICE':
             handleUSERNOTICE(message)
             break
-            
+
           case 'CLEARCHAT':
             handleCLEARCHAT(message)
             break
@@ -376,9 +376,9 @@ const Home = () => {
       })
     }
   }, [isConnected, isJoined])
-  
+
   // Set up Tiltify polling
-  useEffect(() => { 
+  useEffect(() => {
     let shouldContinue = true
 
     const getDonations = async () => {
@@ -439,24 +439,24 @@ const Home = () => {
       shouldContinue = false
     }
   })
-  
+
   return (
     <div className="overlay">
       <div className="screenshare">
         <div className="pixel-crest" />
-        
+
         <h1>Privacy, please.</h1>
       </div>
-      
+
       <div className="camera" />
-      
+
       <Events events={events} />
-      
+
       <Chat
         isConnected={isConnected}
         isJoined={isJoined}
         messages={messages} />
-      
+
       <div className="vertical-bar" />
       <div className="horizontal-bar" />
     </div>
