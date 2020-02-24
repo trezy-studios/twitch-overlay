@@ -14,7 +14,7 @@ import React from 'react'
 
 
 const Overlay = () => (
-  <div>Blank slate.</div>
+  <div>{'Blank slate.'}</div>
 )
 
 
