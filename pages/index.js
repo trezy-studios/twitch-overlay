@@ -1,13 +1,13 @@
 // Style imports
-import '../scss/reset.scss';
-import '../scss/app.scss';
+import '../scss/reset.scss'
+import '../scss/app.scss'
 
 // Module imports
-import React from 'react';
-import { TwitchChat } from './../components/TwitchChat';
-import { OverlayDeco } from '../components/OverlayDeco';
-import { EventNotifications } from './../components/EventNotifications';
-import { EventHistory } from './../components/EventHistory';
+import React from 'react'
+import { TwitchChat } from '../components/TwitchChat'
+import { OverlayDeco } from '../components/OverlayDeco'
+import { EventNotifications } from '../components/EventNotifications'
+import { EventHistory } from '../components/EventHistory'
 
 const Overlay = () => (
   <>
@@ -16,6 +16,6 @@ const Overlay = () => (
     <EventNotifications />
     <EventHistory />
   </>
-);
+)
 
-export default Overlay;
+export default Overlay

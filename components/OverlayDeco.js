@@ -1,4 +1,3 @@
-import React from "react";
-export function OverlayDeco() {
-  return <div className="overlay-deco"></div>;
-}
+import React from 'react'
+
+export const OverlayDeco = () => <div className="overlay-deco" />

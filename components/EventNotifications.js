@@ -1,4 +1,3 @@
-import React from "react";
-export function EventNotifications() {
-  return <div className="event-notifications"></div>;
-}
+import React from 'react'
+
+export const EventNotifications = () => <div className="event-notifications" />
