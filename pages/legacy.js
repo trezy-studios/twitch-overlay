@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Style imports
 import '../scss/reset.scss'
 import '../scss/legacy.scss'
