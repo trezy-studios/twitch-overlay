@@ -4,6 +4,13 @@ This is the repo for [@TrezyCodes][twitch] stream overlay!
 
 ## Getting started
 
-To run the overlay locally, you'll need to install the required modules with `yarn install`. Once that's done, you can start the project by running `yarn start`. The overlay will be available at [http://localhost:3000](http://localhost:3000).
+Follow these steps to run the overlay locally:
+
+1. Install the project's dependencies:
+  ```yarn install```
+1. Link the Now project:
+  ```now --confirm```
+
+Once you've set up the local repo, you can use `yarn start` to start the local server whenever you're ready for development! The overlay will be available at [http://localhost:3000](http://localhost:3000).
 
 [twitch]: https://twitch.tv/TrezyCodes "TrezyCodes on Twitch"
