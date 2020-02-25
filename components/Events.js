@@ -1,3 +1,11 @@
+// Module imports
+import PropTypes from 'prop-types'
+import React from 'react'
+
+
+
+
+
 // Local imports
 import BitsEvent from './BitsEvent'
 import HostEvent from './HostEvent'
@@ -12,17 +20,9 @@ import TiltifyDonationEvent from './TiltifyDonationEvent'
 
 const Events = props => {
   const { events } = props
-      
+
   return (
     <ol className="events">
-      <li className="event subscription-event">
-        <div className="icon" />
-
-        <p>
-          <span className="username">glEnd2</span> subscribed to the channel!
-        </p>
-      </li>
-      
       {events.map(event => {
         if (event.type === 'bits') {
           return (
@@ -31,7 +31,7 @@ const Events = props => {
               {...event} />
           )
         }
-        
+
         if (event.type === 'host') {
           return (
             <HostEvent
@@ -39,7 +39,7 @@ const Events = props => {
               {...event} />
           )
         }
-        
+
         if (event.type === 'raid') {
           return (
             <RaidEvent
@@ -47,7 +47,7 @@ const Events = props => {
               {...event} />
           )
         }
-        
+
         if (event.type === 'resubscription') {
           return (
             <ResubscriptionEvent
@@ -55,7 +55,7 @@ const Events = props => {
               {...event} />
           )
         }
-        
+
         if (event.type === 'subscription') {
           return (
             <SubscriptionEvent
@@ -72,11 +72,15 @@ const Events = props => {
               {...event} />
           )
         }
-        
+
         return null
       })}
     </ol>
   )
+}
+
+Events.propTypes = {
+  events: PropTypes.array.isRequired,
 }
 
 
