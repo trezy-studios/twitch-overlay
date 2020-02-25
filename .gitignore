@@ -4,4 +4,5 @@
 yarn-error.log
 .next/
 node_modules/
+.vscode
 .now
