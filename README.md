@@ -1,6 +1,6 @@
 # Trezy's Stream Overlay
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 This is the repo for [@TrezyCodes][twitch] stream overlay!
@@ -28,6 +28,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="http://trezy.com"><img src="https://avatars2.githubusercontent.com/u/442980?v=4" width="100px;" alt=""/><br /><sub><b>Trezy</b></sub></a><br /><a href="https://github.com/trezy-studios/twitch-overlay/commits?author=trezy" title="Code">💻</a> <a href="https://github.com/trezy-studios/twitch-overlay/commits?author=trezy" title="Documentation">📖</a> <a href="#design-trezy" title="Design">🎨</a> <a href="#ideas-trezy" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-trezy" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-trezy" title="Maintenance">🚧</a> <a href="#projectManagement-trezy" title="Project Management">📆</a> <a href="#question-trezy" title="Answering Questions">💬</a> <a href="https://github.com/trezy-studios/twitch-overlay/pulls?q=is%3Apr+reviewed-by%3Atrezy" title="Reviewed Pull Requests">👀</a></td>
+    <td align="center"><a href="https://github.com/IanSSenne"><img src="https://avatars2.githubusercontent.com/u/48780301?v=4" width="100px;" alt=""/><br /><sub><b>IanSSenne</b></sub></a><br /><a href="https://github.com/trezy-studios/twitch-overlay/commits?author=IanSSenne" title="Code">💻</a> <a href="#ideas-IanSSenne" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
