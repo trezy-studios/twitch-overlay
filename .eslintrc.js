@@ -21,7 +21,7 @@ module.exports = {
       unnamedComponents: 'arrow-function',
     }],
 
-    'react/jsx-curly-newline': ['error', 'forbid'],
+    'react/jsx-curly-newline': ['error', 'never'],
 
     // react-hooks
     'react-hooks/exhaustive-deps': ['off'],
