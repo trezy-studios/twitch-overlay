@@ -17,16 +17,14 @@ function notifyOfContent () {
     try {
       callback()
     } catch (error) {
-      error.message = 'NOOP'
-      // this is here because eslint does not allow for an empty block and try needs catch
+      console.error('got error while notifying listeners', error)
     }
   }
   for (const callback of eventContentOnce) {
     try {
       callback()
     } catch (error) {
-      error.message = 'NOOP'
-      // this is here because eslint does not allow for an empty block and try needs catch
+      console.error('got error while notifying listeners', error)
     }
   }
   eventContentOnce = []
