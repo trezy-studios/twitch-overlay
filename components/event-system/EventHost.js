@@ -27,7 +27,7 @@ const EventHost = () => {
     }
     return (
       <>
-        <code>{'missing component for event type '}{event.type}{' please do EventHost.register(\''}{event.type}{'\',Component)'}</code>
+        <code>{`missing component for event type ${event.type} please do EventHost.register('${event.type}', Component)`}</code>
         <h1>
           {'did you mean to put one of the following?'}
         </h1>
