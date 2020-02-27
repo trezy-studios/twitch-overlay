@@ -3,7 +3,7 @@ import eventQueue from '.'
 
 const EVENT_AWAIT_NEXT = Symbol('EVENT_AWAIT_NEXT')
 const componentRegistry = {}
-// eslint-disable-next-line react/prefer-stateless-function
+
 const EventHost = () => {
   const [event, setEvent] = React.useState(EVENT_AWAIT_NEXT)
   if (event === EVENT_AWAIT_NEXT) {
@@ -14,7 +14,7 @@ const EventHost = () => {
         setEvent(eventQueue.next())
       })
     }
-    return <div />
+    return null
   }
   if (event) {
     if (!event.data.duration) {
@@ -25,11 +25,23 @@ const EventHost = () => {
       const Component = componentRegistry[event.type]
       return <Component {...event.data} />
     }
-    return <code>{'missing component for event type '}{event.type}{'please do EventHost.register(\''}{event.type}{'\',Component)'}</code>
+    return (
+      <>
+        <code>{'missing component for event type '}{event.type}{' please do EventHost.register(\''}{event.type}{'\',Component)'}</code>
+        <h1>
+          {'did you mean to put one of the following?'}
+        </h1>
+        <ul>
+          {Object.keys(componentRegistry).map(key => (<li key={key}><code>{key}</code></li>))}
+        </ul>
+      </>
+    )
   }
-  return <div />
+  return null
 }
+
 EventHost.register = (type, component) => {
   componentRegistry[type] = component
 }
+
 export default EventHost
