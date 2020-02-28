@@ -14,6 +14,7 @@ module.exports = {
 
     // jsx-a11y
     'jsx-a11y/control-has-associated-label': ['off'],
+    'jsx-a11y/media-has-caption': ['off'],
 
     // react
     'react/function-component-definition': ['error', {

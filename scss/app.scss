@@ -37,6 +37,7 @@
 @import 'core/em';
 @import 'core/img';
 @import 'core/strong';
+@import 'core/video';
 
 
 
@@ -47,7 +48,8 @@
 \******************************************************************************/
 
 // @import 'components/COMPONENT_NAME';
-@import 'components/twitch-chat';
-@import 'components/overlay-deco';
+@import 'components/alert';
+@import 'components/event-history';
 @import 'components/event-notifications';
-@import 'components/event-history.scss';
+@import 'components/overlay-deco';
+@import 'components/twitch-chat';
