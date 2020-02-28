@@ -2,7 +2,10 @@
 .env
 .env.build
 yarn-error.log
+*.webm.xmp
 .next/
+.vscode/
+.now/
+*_AME/
+Adobe After Effects Auto-Save/
 node_modules/
-.vscode
-.now
