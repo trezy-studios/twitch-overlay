@@ -162,7 +162,7 @@ h1 {
   }
 
   &:before {
-    background-image: url('/chat-flag.png');
+    background-image: url('/images/chat-flag.png');
     background-repeat: no-repeat;
     content: '';
     display: block;
@@ -239,7 +239,7 @@ h1 {
   }
 
   .badges {
-    background-image: url('/badge-socket.png');
+    background-image: url('/images/badge-socket.png');
     background-repeat: repeat-x;
     display: flex;
     flex-grow: 0;
@@ -273,15 +273,15 @@ h1 {
     width: 32px;
 
     &.founder {
-      background-image: url('/founder-badge.png');
+      background-image: url('/images/founder-badge.png');
     }
 
     &.moderator {
-      background-image: url('/moderator-badge.png');
+      background-image: url('/images/moderator-badge.png');
     }
 
     &.vip {
-      background-image: url('/vip-badge.png');
+      background-image: url('/images/vip-badge.png');
     }
   }
 
@@ -298,7 +298,7 @@ h1 {
     }
 
     .avatar {
-      background-image: url('/avatar-placeholder.png');
+      background-image: url('/images/avatar-placeholder.png');
       background-size: cover;
       background-repeat: no-repeat;
       float: left;
@@ -348,7 +348,7 @@ h1 {
     border-image-outset: 4px;
     border-image-repeat: repeat;
     border-image-slice: 8 fill;
-    border-image-source: url('/message-background.png');
+    border-image-source: url('/images/message-background.png');
     border-image-width: 8px;
     flex-shrink: 0;
     margin-top: 8px;
@@ -379,7 +379,7 @@ h1 {
   position: relative;
 
   &:before {
-    background-image: url('/events-flag.png');
+    background-image: url('/images/events-flag.png');
     background-repeat: no-repeat;
     content: '';
     display: block;
@@ -430,7 +430,7 @@ h1 {
     position: relative;
 
     &:after {
-      background-image: url('/event-background.png');
+      background-image: url('/images/event-background.png');
       background-repeat: no-repeat;
       bottom: 0;
       content: '';
@@ -466,19 +466,19 @@ h1 {
     }
 
     &.bits-event .icon {
-      background-image: url('/bits-event-icon.png');
+      background-image: url('/images/bits-event-icon.png');
     }
 
     &.resubscription-event .icon {
-      background-image: url('/resubscription-event-icon.png');
+      background-image: url('/images/resubscription-event-icon.png');
     }
 
     &.subscription-event .icon {
-      background-image: url('/subscription-event-icon.png');
+      background-image: url('/images/subscription-event-icon.png');
     }
 
     &.tiltify-donation-event .icon {
-      background-image: url('/donation-event-icon.png');
+      background-image: url('/images/donation-event-icon.png');
     }
   }
 }
@@ -493,7 +493,7 @@ h1 {
   animation-iteration-count: infinite;
   animation-name: loading-spinner;
   animation-timing-function: steps(48);
-  background-image: url('/loading-spinner.png');
+  background-image: url('/images/loading-spinner.png');
   background-repeat: no-repeat;
   height: 64px;
   opacity: 1;
@@ -506,7 +506,7 @@ h1 {
   animation-iteration-count: infinite;
   animation-name: pixel-crest;
   animation-timing-function: steps(35);
-  background-image: url('/pixel-crest.png');
+  background-image: url('/images/pixel-crest.png');
   background-repeat: no-repeat;
   display: none;
   flex-grow: 1;
@@ -523,7 +523,7 @@ h1 {
 }
 
 .horizontal-bar {
-  background-image: url('/horizontal-bar.png');
+  background-image: url('/images/horizontal-bar.png');
   background-repeat: repeat-x;
   height: var(--bar-size);
   left: 0;
@@ -532,7 +532,7 @@ h1 {
 }
 
 .vertical-bar {
-  background-image: url('/vertical-bar.png');
+  background-image: url('/images/vertical-bar.png');
   background-repeat: repeat-y;
   bottom: 0;
   left: 75%;
