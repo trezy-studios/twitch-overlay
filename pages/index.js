@@ -12,6 +12,7 @@ import React, {
   useEffect,
   useState,
 } from 'react'
+import tmi from 'tmi.js'
 
 
 
@@ -40,6 +41,22 @@ const initialEvents = [
 
 
 
+// Local variables
+const twitchClient = new tmi.Client({
+  channels: ['#TrezyCodes'],
+  connection: {
+    port: 3001,
+    server: 'localhost',
+  },
+  options: {
+    debug: true,
+  },
+})
+
+
+
+
+
 const Overlay = () => {
   const [events, setEvents] = useState(initialEvents)
   const alertRef = createRef(null)
@@ -54,6 +71,12 @@ const Overlay = () => {
       })
     }
   }, [events])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      twitchClient.connect()
+    }
+  }, [])
 
   return (
     <>

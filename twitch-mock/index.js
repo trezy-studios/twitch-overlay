@@ -12,6 +12,7 @@ const {
   PORT = 3001,
 } = process.env
 const channels = {}
+const HOST = 'tmi.twitch.tv'
 const server = new WebSocket.Server({ port: PORT })
 
 
@@ -56,11 +57,12 @@ const parseMessage = (message, socketDataStore) => {
 
     return {
       command,
-      response: `
-      :${username}!${username}@${username}.tmi.twitch.tv JOIN #${channel}
-      :${username}.tmi.twitch.tv 353 ${username} = #${channel} :${username}
-      :${username}.tmi.twitch.tv 366 ${channels[channel].users.join(' ')} #${channel} :End of /NAMES list
-      `.replace(/\n\s+/gu, '\n'),
+      response: [
+        `:${username}!${username}@${username}.${HOST} JOIN #${channel}`,
+        `:${username}.${HOST} 353 ${username} = #${channel} :${username}`,
+        `:${username}.${HOST} 366 ${channels[channel].users.join(' ')} #${channel} :End of /NAMES list`,
+        `@emote-only=0;followers-only=-1;r9k=0;rituals=0;room-id=72632519;slow=0;subs-only=0 :tmi.twitch.tv ROOMSTATE #${channel}`,
+      ].join('\r\n'),
       type: 'channels',
     }
   }
@@ -83,10 +85,19 @@ const parseMessage = (message, socketDataStore) => {
     }
   }
 
+  if (message.startsWith('PONG')) {
+    clearTimeout(socketDataStore.pongTimeoutID)
+
+    return {
+      command: 'PONG',
+      type: 'pong',
+    }
+  }
+
   return {
     command,
     message,
-    response: `:tmi.twitch.tv 421 ${username} ${command} :Unknown command`,
+    response: `:${HOST} 421 ${username} ${command} :Unknown command`,
     type: 'unknown',
   }
 }
@@ -96,6 +107,7 @@ server.on('connection', socket => {
     capabilities: null,
     id: uuid(),
     isAcknowledged: false,
+    pongTimeoutID: null,
     token: null,
     username: null,
   }
@@ -134,17 +146,17 @@ server.on('connection', socket => {
 
       if (capabilities && token && username) {
         log('Acknowledging client', { id })
-        socket.send(`:tmi.twitch.tv CAP * ACK :${capabilities.join(' ')}`)
-        socket.send(`
-        :tmi.twitch.tv 001 ${username} :Welcome, GLHF!
-        :tmi.twitch.tv 002 ${username} :Your host is tmi.twitch.tv
-        :tmi.twitch.tv 003 ${username} :This server is rather new
-        :tmi.twitch.tv 004 ${username} :-
-        :tmi.twitch.tv 375 ${username} :-
-        :tmi.twitch.tv 372 ${username} :You are in a maze of twisty passages, all alike.
-        :tmi.twitch.tv 376 ${username} :>
-        @badge-info=;badges=premium/1;color=#0092C7;display-name=TrezyCodes;emote-sets=0;user-id=12345678;user-type= :tmi.twitch.tv GLOBALUSERSTATE
-        `.replace(/\n\s+/gu, '\n'))
+        socket.send(`:${HOST} CAP * ACK :${capabilities.join(' ')}`)
+        socket.send([
+          `:${HOST} 001 ${username} :Welcome, GLHF!`,
+          `:${HOST} 002 ${username} :Your host is ${HOST}`,
+          `:${HOST} 003 ${username} :This server is rather new`,
+          `:${HOST} 004 ${username} :-`,
+          `:${HOST} 375 ${username} :-`,
+          `:${HOST} 372 ${username} :You are in a maze of twisty passages, all alike.`,
+          `:${HOST} 376 ${username} :>`,
+        ].join('\r\n'))
+        socket.send('PING')
         socketDataStore.isAcknowledged = true
       }
     }
@@ -152,17 +164,10 @@ server.on('connection', socket => {
 
   setInterval(() => {
     const { id } = socketDataStore
-    const timeoutID = setTimeout(() => {
+    socketDataStore.pongTimeoutID = setTimeout(() => {
       log('Client didn\'t PONG in time - terminating connection', { id }, 'error')
       socket.terminate()
     }, 1000)
-
-    socket.on('message', message => {
-      if (message === 'PONG :tmi.twitch.tv') {
-        clearTimeout(timeoutID)
-        log('Client responded to ping', { id }, 'info')
-      }
-    })
 
     log('Pinging client', { id }, 'info')
     socket.send('PING')
