@@ -56,7 +56,11 @@ const parseMessage = (message, socketDataStore) => {
 
     return {
       command,
-      response: `:${username}!${username}@${username}.tmi.twitch.tv JOIN #${channel}`,
+      response: `
+      :${username}!${username}@${username}.tmi.twitch.tv JOIN #${channel}
+      :${username}.tmi.twitch.tv 353 ${username} = #${channel} :${username}
+      :${username}.tmi.twitch.tv 366 ${channels[channel].users.join(' ')} #${channel} :End of /NAMES list
+      `.replace(/\n\s+/gu, '\n'),
       type: 'channels',
     }
   }
@@ -131,6 +135,16 @@ server.on('connection', socket => {
       if (capabilities && token && username) {
         log('Acknowledging client', { id })
         socket.send(`:tmi.twitch.tv CAP * ACK :${capabilities.join(' ')}`)
+        socket.send(`
+        :tmi.twitch.tv 001 ${username} :Welcome, GLHF!
+        :tmi.twitch.tv 002 ${username} :Your host is tmi.twitch.tv
+        :tmi.twitch.tv 003 ${username} :This server is rather new
+        :tmi.twitch.tv 004 ${username} :-
+        :tmi.twitch.tv 375 ${username} :-
+        :tmi.twitch.tv 372 ${username} :You are in a maze of twisty passages, all alike.
+        :tmi.twitch.tv 376 ${username} :>
+        @badge-info=;badges=premium/1;color=#0092C7;display-name=TrezyCodes;emote-sets=0;user-id=12345678;user-type= :tmi.twitch.tv GLOBALUSERSTATE
+        `.replace(/\n\s+/gu, '\n'))
         socketDataStore.isAcknowledged = true
       }
     }
