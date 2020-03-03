@@ -11,6 +11,7 @@ const WebSocket = require('ws')
 const {
   PORT = 3001,
 } = process.env
+const channels = {}
 const server = new WebSocket.Server({ port: PORT })
 
 
@@ -27,36 +28,61 @@ const log = (message, meta = {}, type = 'log') => {
   console.log('')
 }
 
-const parseMessage = message => {
-  let messageType = message.split(':')[0].trim()
+const parseMessage = (message, socketDataStore) => {
+  const {
+    username,
+  } = socketDataStore
+  let command = message.split(':')[0].trim()
 
-  if (messageType === 'CAP REQ') {
+  if (command === 'CAP REQ') {
     return {
-      command: messageType,
+      command,
       data: message.replace(/^CAP REQ :/u, '').split(' '),
+      set: true,
       type: 'capabilities',
     }
   }
 
-  if (message.startsWith('PASS')) {
+  if (message.startsWith('JOIN')) {
+    const channel = message.replace(/^JOIN /u, '').trim().replace(/^#/u, '')
+
+    if (!channels[channel]) {
+      channels[channel] = {
+        users: [],
+      }
+    }
+
+    channels[channel].users.push(username)
+
     return {
-      command: messageType,
-      data: message.replace(/^PASS /u, ''),
-      type: 'token',
+      command,
+      response: `:${username}!${username}@${username}.tmi.twitch.tv JOIN #${channel}`,
+      type: 'channels',
     }
   }
 
   if (message.startsWith('NICK')) {
     return {
-      command: messageType,
+      command,
       data: message.replace(/^NICK /u, ''),
+      set: true,
       type: 'username',
     }
   }
 
+  if (message.startsWith('PASS')) {
+    return {
+      command,
+      data: message.replace(/^PASS /u, ''),
+      set: true,
+      type: 'token',
+    }
+  }
+
   return {
-    command: messageType,
+    command,
     message,
+    response: `:tmi.twitch.tv 421 ${username} ${command} :Unknown command`,
     type: 'unknown',
   }
 }
@@ -77,29 +103,35 @@ server.on('connection', socket => {
     const {
       command,
       data,
+      response = false,
+      set = false,
       type,
-    } = parseMessage(message)
+    } = parseMessage(message, socketDataStore)
 
     log('Message from client', {
       id,
       message,
     }, 'info')
 
-    if (type === 'unknown') {
-      socket.send(`:tmi.twitch.tv 421 <${socketDataStore.username}> ${command} :Unknown command`)
-    } else {
-      socketDataStore[type] = data
+    if (response) {
+      socket.send(response)
+    }
 
+    if (set) {
+      socketDataStore[type] = data
+    }
+
+    if (!socketDataStore.isAcknowledged) {
       const {
         capabilities,
-        isAcknowledged,
         token,
         username,
       } = socketDataStore
 
-      if (!isAcknowledged && capabilities && token && username) {
+      if (capabilities && token && username) {
         log('Acknowledging client', { id })
         socket.send(`:tmi.twitch.tv CAP * ACK :${capabilities.join(' ')}`)
+        socketDataStore.isAcknowledged = true
       }
     }
   })
