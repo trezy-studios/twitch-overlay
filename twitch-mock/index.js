@@ -28,10 +28,11 @@ const log = (message, meta = {}, type = 'log') => {
 }
 
 const parseMessage = message => {
-  let messageType = message.split(' ')[0]
+  let messageType = message.split(':')[0].trim()
 
-  if (message.startsWith('CAP REQ')) {
+  if (messageType === 'CAP REQ') {
     return {
+      command: messageType,
       data: message.replace(/^CAP REQ :/u, '').split(' '),
       type: 'capabilities',
     }
@@ -39,6 +40,7 @@ const parseMessage = message => {
 
   if (message.startsWith('PASS')) {
     return {
+      command: messageType,
       data: message.replace(/^PASS /u, ''),
       type: 'token',
     }
@@ -46,12 +48,17 @@ const parseMessage = message => {
 
   if (message.startsWith('NICK')) {
     return {
+      command: messageType,
       data: message.replace(/^NICK /u, ''),
       type: 'username',
     }
   }
 
-  return message
+  return {
+    command: messageType,
+    message,
+    type: 'unknown',
+  }
 }
 
 server.on('connection', socket => {
@@ -66,29 +73,34 @@ server.on('connection', socket => {
   log('New client connected', { id: socketDataStore.id }, 'info')
 
   socket.on('message', message => {
+    const { id } = socketDataStore
     const {
+      command,
       data,
       type,
     } = parseMessage(message)
-
-    socketDataStore[type] = data
-
-    const {
-      capabilities,
-      id,
-      isAcknowledged,
-      token,
-      username,
-    } = socketDataStore
 
     log('Message from client', {
       id,
       message,
     }, 'info')
 
-    if (!isAcknowledged && capabilities && token && username) {
-      log('Acknowledging client', { id })
-      socket.send(`:tmi.twitch.tv CAP * ACK :${capabilities.join(' ')}`)
+    if (type === 'unknown') {
+      socket.send(`:tmi.twitch.tv 421 <${socketDataStore.username}> ${command} :Unknown command`)
+    } else {
+      socketDataStore[type] = data
+
+      const {
+        capabilities,
+        isAcknowledged,
+        token,
+        username,
+      } = socketDataStore
+
+      if (!isAcknowledged && capabilities && token && username) {
+        log('Acknowledging client', { id })
+        socket.send(`:tmi.twitch.tv CAP * ACK :${capabilities.join(' ')}`)
+      }
     }
   })
 
