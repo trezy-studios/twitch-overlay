@@ -1,24 +1,22 @@
 // Module imports
 import PropTypes from 'prop-types'
-import React, {
-  forwardRef,
-} from 'react'
+import React from 'react'
 
 
 
 
 
-const Alert = forwardRef((props, ref) => {
+const Alert = props => {
   const {
     type,
     username,
   } = props
-
+  const _handleNext = props.next
   return (
     <div className="alert" data-props={JSON.stringify(props)}>
       <video
-        ref={ref}
-        autoPlay>
+        autoPlay
+        onEnded={_handleNext}>
         <source
           src={`public/media/${type}-alert.webm`}
           type="video/webm" />
@@ -39,7 +37,7 @@ const Alert = forwardRef((props, ref) => {
       )}
     </div>
   )
-})
+}
 
 Alert.defaultProps = {
   bits: '0',
@@ -48,6 +46,7 @@ Alert.defaultProps = {
 
 Alert.propTypes = {
   bits: PropTypes.string,
+  next: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
   username: PropTypes.string,
 }

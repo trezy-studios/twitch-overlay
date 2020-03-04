@@ -6,16 +6,9 @@ const componentRegistry = {}
 
 const EventHost = () => {
   const [event, setEvent] = React.useState(EVENT_AWAIT_NEXT)
-  const vref = React.createRef()
-  React.useEffect(() => {
-    console.log(vref)
-    if (vref.current) {
-      console.log(vref)
-      vref.current.addEventListener('ended', () => {
-        setEvent(EVENT_AWAIT_NEXT)
-      })
-    }
-  }, [])
+
+  const ResolveNext = () => setEvent(EVENT_AWAIT_NEXT)
+  // console.log(vref)
   if (event === EVENT_AWAIT_NEXT) {
     if (eventQueue.hasNext()) {
       setEvent(eventQueue.next())
@@ -32,7 +25,8 @@ const EventHost = () => {
     }
     if (componentRegistry[event.type]) {
       const Component = componentRegistry[event.type]
-      return <Component {...event.data} ref={vref} />
+      // eslint-disable-next-line react/jsx-no-bind
+      return <Component {...event.data} next={ResolveNext} />
     }
     return (
       <>
