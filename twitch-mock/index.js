@@ -1,4 +1,5 @@
 // Module imports
+const faker = require('faker')
 const Logger = require('ians-logger')
 const uuid = require('uuid/v4')
 const WebSocket = require('ws')
@@ -91,6 +92,22 @@ const parseMessage = (message, socketDataStore) => {
     return {
       command: 'PONG',
       type: 'pong',
+    }
+  }
+
+  if (message.startsWith('PRIVMSG')) {
+    const [, channel, data] = /^PRIVMSG #(\w+) :(.*)$/u.exec(message)
+    const username = faker.internet.userName()
+    let response = null
+
+    if (data.startsWith('bits')) {
+      response = `@badge-info=subscriber/14;badges=broadcaster/1,subscriber/0,premium/1;color=#0092C7;display-name=${username};emotes=;flags=;id=${uuid()};mod=0;room-id=72632519;subscriber=1;tmi-sent-ts=${Date.now()};turbo=0;user-id=${uuid()};bits=100;user-type= :${username}!${username}@${username}.tmi.twitch.tv PRIVMSG #${channel} :${data.replace(/^bits /u, '')}!`
+    }
+
+    return {
+      command: 'PRIVMSG',
+      response,
+      type: 'message',
     }
   }
 
