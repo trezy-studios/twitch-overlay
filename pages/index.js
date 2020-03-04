@@ -12,6 +12,7 @@ import React, {
   useEffect,
   useState,
 } from 'react'
+import PropTypes from 'prop-types'
 import tmi from 'tmi.js'
 
 
@@ -42,23 +43,26 @@ const initialEvents = [
 
 
 // Local variables
-const twitchClient = new tmi.Client({
+const tmiOptions = {
   channels: ['#TrezyCodes'],
-  connection: {
-    port: 3001,
-    server: 'localhost',
-  },
+  identity: {},
   options: {
     debug: true,
   },
-})
+}
+let twitchClient = null
 
 
 
 
 
-const Overlay = () => {
+const Overlay = props => {
   const [events, setEvents] = useState(initialEvents)
+  const {
+    token,
+    useMockServer,
+    username,
+  } = props
   const alertRef = createRef(null)
 
   useEffect(() => {
@@ -66,7 +70,7 @@ const Overlay = () => {
       alertRef.current.addEventListener('ended', () => {
         setEvents(previousEvents => {
           previousEvents.shift()
-          setEvents([...previousEvents])
+          return [...previousEvents]
         })
       })
     }
@@ -74,6 +78,27 @@ const Overlay = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      if (useMockServer) {
+        tmiOptions.connection = {
+          port: 3001,
+          server: 'localhost',
+        }
+      }
+
+      if (username) {
+        tmiOptions.identity.username = username
+      }
+
+      if (token) {
+        tmiOptions.identity.password = token
+      }
+
+      twitchClient = new tmi.Client(tmiOptions)
+
+      if (useMockServer) {
+        window.twitchClient = twitchClient
+      }
+
       twitchClient.connect()
     }
   }, [])
@@ -91,6 +116,23 @@ const Overlay = () => {
       <EventHistory />
     </>
   )
+}
+
+Overlay.getInitialProps = ({ query }) => ({
+  ...query,
+  useMockServer: query.useMockServer === 'true',
+})
+
+Overlay.defaultProps = {
+  token: '',
+  useMockServer: false,
+  username: '',
+}
+
+Overlay.propTypes = {
+  token: PropTypes.string,
+  useMockServer: PropTypes.bool,
+  username: PropTypes.string,
 }
 
 
