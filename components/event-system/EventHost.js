@@ -6,6 +6,16 @@ const componentRegistry = {}
 
 const EventHost = () => {
   const [event, setEvent] = React.useState(EVENT_AWAIT_NEXT)
+  const vref = React.createRef()
+  React.useEffect(() => {
+    console.log(vref)
+    if (vref.current) {
+      console.log(vref)
+      vref.current.addEventListener('ended', () => {
+        setEvent(EVENT_AWAIT_NEXT)
+      })
+    }
+  }, [])
   if (event === EVENT_AWAIT_NEXT) {
     if (eventQueue.hasNext()) {
       setEvent(eventQueue.next())
@@ -20,10 +30,9 @@ const EventHost = () => {
     if (!event.data.duration) {
       event.data.duration = 1000
     }
-    setTimeout(() => setEvent(EVENT_AWAIT_NEXT), event.data.duration)
     if (componentRegistry[event.type]) {
       const Component = componentRegistry[event.type]
-      return <Component {...event.data} />
+      return <Component {...event.data} ref={vref} />
     }
     return (
       <>

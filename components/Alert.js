@@ -15,12 +15,15 @@ const Alert = forwardRef((props, ref) => {
   } = props
 
   return (
-    <div className="alert">
+    <div className="alert" data-props={JSON.stringify(props)}>
       <video
         ref={ref}
         autoPlay>
         <source
-          src={`/media/${type}-alert.webm`}
+          src={`public/media/${type}-alert.webm`}
+          type="video/webm" />
+        <source
+          src="/media/follow-alert.webm"
           type="video/webm" />
       </video>
 
@@ -29,15 +32,22 @@ const Alert = forwardRef((props, ref) => {
           <strong>{username}</strong>{' has followed!'}
         </span>
       )}
+      {(type === 'bits') && (
+        <span>
+          <strong>{username}</strong>{' has cheered '}<strong>{props.bits}</strong>{`${props.bits === '1' ? 'bit' : 'bits'}!`}
+        </span>
+      )}
     </div>
   )
 })
 
 Alert.defaultProps = {
+  bits: '0',
   username: null,
 }
 
 Alert.propTypes = {
+  bits: PropTypes.string,
   type: PropTypes.string.isRequired,
   username: PropTypes.string,
 }

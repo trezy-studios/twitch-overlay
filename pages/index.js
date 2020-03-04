@@ -8,11 +8,10 @@ import '../scss/app.scss'
 
 // Module imports
 import React, {
-  createRef,
   useEffect,
-  useState,
 } from 'react'
 import PropTypes from 'prop-types'
+// eslint-disable-next-line import/no-unresolved
 import tmi from 'tmi.js'
 
 
@@ -20,23 +19,11 @@ import tmi from 'tmi.js'
 
 
 // Local imports
-import { Alert } from '../components/Alert'
 import { EventHistory } from '../components/EventHistory'
 import { EventNotifications } from '../components/EventNotifications'
 import { OverlayDeco } from '../components/OverlayDeco'
 import { TwitchChat } from '../components/TwitchChat'
-
-
-
-
-
-// Local constants
-const initialEvents = [
-  {
-    username: 'TrezyCodes',
-    type: 'follow',
-  },
-]
+import { eventQueuePush, PRIORITY } from '../components/event-system/queue'
 
 
 
@@ -50,31 +37,17 @@ const tmiOptions = {
     debug: true,
   },
 }
-let twitchClient = null
 
 
 
 
 
 const Overlay = props => {
-  const [events, setEvents] = useState(initialEvents)
   const {
     token,
     useMockServer,
     username,
   } = props
-  const alertRef = createRef(null)
-
-  useEffect(() => {
-    if (events.length && alertRef.current) {
-      alertRef.current.addEventListener('ended', () => {
-        setEvents(previousEvents => {
-          previousEvents.shift()
-          return [...previousEvents]
-        })
-      })
-    }
-  }, [events])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -93,23 +66,40 @@ const Overlay = props => {
         tmiOptions.identity.password = token
       }
 
-      twitchClient = new tmi.Client(tmiOptions)
+      const twitchClient = new tmi.Client(tmiOptions)
 
       if (useMockServer) {
         window.twitchClient = twitchClient
       }
 
       twitchClient.connect()
+      // eslint-disable-next-line max-params
+      twitchClient.on('resub', (_channel, _username, _months, _message, userstate, _methods) => {
+        // Do your stuff.
+        const months = Number(userstate['msg-param-cumulative-months'])
+        eventQueuePush('resubscription', {
+          duration: 5000,
+          data: {
+            _channel, _username, _months, _message, months, _methods,
+          },
+        })
+      }, PRIORITY.HIGH)
+      // eslint-disable-next-line no-unused-vars
+      twitchClient.on('cheer', (_channel, userstate, _message) => {
+        // Do your stuff.
+        eventQueuePush('bits', {
+          duration: 5000,
+          data: {
+            bits: userstate.bits,
+            userstate,
+          },
+        }, PRIORITY.HIGH)
+      })
     }
   }, [])
 
   return (
     <>
-      {Boolean(events.length) && (
-        <Alert
-          ref={alertRef}
-          {...events[0]} />
-      )}
       <TwitchChat />
       <OverlayDeco />
       <EventNotifications />
