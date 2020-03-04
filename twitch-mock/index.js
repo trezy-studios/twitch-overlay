@@ -3,6 +3,7 @@ const faker = require('faker')
 const Logger = require('ians-logger')
 const uuid = require('uuid/v4')
 const WebSocket = require('ws')
+const tmiParser = require('tmi.js/lib/parser')
 
 
 
@@ -14,6 +15,13 @@ const {
 } = process.env
 const channels = {}
 const HOST = 'tmi.twitch.tv'
+const serializeTwitchObject = object => Object.entries(object).reduce((accumulator, [key, value]) => {
+  if (accumulator) {
+    accumulator += ';'
+  }
+
+  return `${accumulator}${key}=${value || ''}`
+}, '')
 const server = new WebSocket.Server({ port: PORT })
 
 
@@ -97,11 +105,58 @@ const parseMessage = (message, socketDataStore) => {
 
   if (message.startsWith('PRIVMSG')) {
     const [, channel, data] = /^PRIVMSG #(\w+) :(.*)$/u.exec(message)
-    const username = faker.internet.userName()
+    const username = faker.internet.userName().replace(/\./gu, '')
     let response = null
 
     if (data.startsWith('bits')) {
-      response = `@badge-info=subscriber/14;badges=broadcaster/1,subscriber/0,premium/1;color=#0092C7;display-name=${username};emotes=;flags=;id=${uuid()};mod=0;room-id=72632519;subscriber=1;tmi-sent-ts=${Date.now()};turbo=0;user-id=${uuid()};bits=100;user-type= :${username}!${username}@${username}.tmi.twitch.tv PRIVMSG #${channel} :${data.replace(/^bits /u, '')}!`
+      response = serializeTwitchObject({
+        '@badge-info': 'subscriber/14',
+        badges: 'broadcaster/1,subscriber/0,premium/1',
+        color: '#0092C7',
+        'display-name': username,
+        emotes: null,
+        flags: null,
+        id: uuid(),
+        mod: 0,
+        'room-id': 72632519,
+        subscriber: 1,
+        'tmi-sent-ts': Date.now(),
+        turbo: 0,
+        'user-id': uuid(),
+        bits: 100,
+        'user-type': null,
+      })
+
+      response += ` :${username}!${username}@${username}.tmi.twitch.tv PRIVMSG #${channel} :${data.replace(/^bits /u, '')}!`
+    }
+
+    if (/^(anonsubgift|resub|sub|subgift|submysterygift)/gu.test(data)) {
+      const [, subType] = /^(\w+)/.exec(data)
+      response = serializeTwitchObject({
+        '@badge-info': null,
+        badges: 'staff/1,broadcaster/1,turbo/1',
+        color: '#008000',
+        'display-name': username,
+        emotes: null,
+        flags: null,
+        id: uuid(),
+        login: username,
+        'room-id': 72632519,
+        'system-msg': `${username} has subscribed for 6 months!`.replace(/\s/gu, '\s'),
+        'tmi-sent-ts': Date.now(),
+        'user-id': uuid(),
+        'user-type': 'staff',
+
+        'msg-id': subType,
+        'msg-param-cumulative-months': 6,
+        'msg-param-should-share-streak': 1,
+        'msg-param-streak-months': 2,
+        'msg-param-sub-plan': 'Prime',
+        'msg-param-sub-plan-name': 'Prime',
+      })
+
+      const displayMessage = data.replace(new RegExp(`^${subType} `, 'u'), '')
+      response += ` :${HOST} USERNOTICE #${channel} :${displayMessage}!`
     }
 
     return {
