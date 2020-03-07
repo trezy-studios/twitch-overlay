@@ -1,7 +1,7 @@
 {
   "@badge-info": [],
   "badges": [],
-  "bits": 100,
+  "bits": "<bitsCount>",
   "color": "<color>",
   "display-name": "<username>",
   "emotes": null,

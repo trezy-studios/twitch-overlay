@@ -141,6 +141,7 @@ const parseMessage = (message, socketDataStore) => {
     }
 
     const messageData = getMock(eventTrigger, {
+      bitsCount: 100,
       channel: channelName,
       channelid: channel.id,
       color: user.color,
