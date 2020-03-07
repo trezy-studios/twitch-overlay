@@ -32,15 +32,15 @@ class UserList {
   \***************************************************************************/
 
   get isEmpty () {
-    return Boolean(this.users.length)
+    return !this.users.length
   }
 
   get userIDs () {
-    return this._users.map(({ id }) => id)
+    return this.users.map(({ id }) => id)
   }
 
   get usernames () {
-    return this._users.map(({ username }) => username)
+    return this.users.map(({ username }) => username)
   }
 
   get users () {

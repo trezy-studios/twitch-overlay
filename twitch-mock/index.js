@@ -1,6 +1,7 @@
 // Module imports
 const faker = require('faker')
 const Logger = require('ians-logger')
+const mri = require('mri')
 const uuid = require('uuid/v4')
 const WebSocket = require('ws')
 const tmiParser = require('tmi.js/lib/parser')
@@ -141,6 +142,7 @@ const parseMessage = (message, socketDataStore) => {
 
     const messageData = getMock(eventTrigger, {
       channel: channelName,
+      channelid: channel.id,
       color: user.color,
       host: HOST,
       message: messageBody,
@@ -148,6 +150,7 @@ const parseMessage = (message, socketDataStore) => {
       timestamp: Date.now(),
       userid: user.id,
       username: user.username,
+      ...mri(messageBody.split(' ')),
     })
 
     return {
