@@ -36,6 +36,8 @@ class Channel extends UserList {
   }
 
   constructor (options) {
+    super(options)
+
     if (options.name) {
       options.name = options.name.toLowerCase()
     }
