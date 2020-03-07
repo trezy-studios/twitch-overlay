@@ -1,7 +1,21 @@
 // Module imports
+const faker = require('faker')
 const Logger = require('ians-logger')
+const mri = require('mri')
 const uuid = require('uuid/v4')
 const WebSocket = require('ws')
+const tmiParser = require('tmi.js/lib/parser')
+
+
+
+
+
+// Local imports
+const Channel = require('./structures/Channel')
+const getMock = require('./helpers/getMock')
+const serializeTwitchObject = require('./helpers/serializeTwitchObject')
+const User = require('./structures/User')
+const UserList = require('./structures/UserList')
 
 
 
@@ -12,6 +26,7 @@ const {
   PORT = 3001,
 } = process.env
 const channels = {}
+const users = new UserList
 const HOST = 'tmi.twitch.tv'
 const server = new WebSocket.Server({ port: PORT })
 
@@ -45,23 +60,36 @@ const parseMessage = (message, socketDataStore) => {
   }
 
   if (message.startsWith('JOIN')) {
-    const channel = message.replace(/^JOIN /u, '').trim().replace(/^#/u, '')
+    const channelName = message.replace(/^JOIN /u, '').trim().replace(/^#/u, '')
+    let channel = channels[channelName]
+    let user = users.findByUsername(username)
 
-    if (!channels[channel]) {
-      channels[channel] = {
-        users: [],
-      }
+    if (!channel) {
+      channel = new Channel({
+        isConnected: true,
+        name: channelName,
+      })
+      channels[channelName] = channel
     }
 
-    channels[channel].users.push(username)
+    if (!channel.isConnected) {
+      channel.connect()
+    }
+
+    if (!user) {
+      user = new User({ username })
+      users.addUser(user)
+    }
+
+    channel.addUser(user)
 
     return {
       command,
       response: [
-        `:${username}!${username}@${username}.${HOST} JOIN #${channel}`,
-        `:${username}.${HOST} 353 ${username} = #${channel} :${username}`,
-        `:${username}.${HOST} 366 ${channels[channel].users.join(' ')} #${channel} :End of /NAMES list`,
-        `@emote-only=0;followers-only=-1;r9k=0;rituals=0;room-id=72632519;slow=0;subs-only=0 :tmi.twitch.tv ROOMSTATE #${channel}`,
+        `:${username}!${username}@${username}.${HOST} JOIN #${channel.name}`,
+        `:${username}.${HOST} 353 ${username} = #${channel.name} :${username}`,
+        `:${username}.${HOST} 366 ${username} #${channel.name} :End of /NAMES list`,
+        `@emote-only=0;followers-only=-1;r9k=0;rituals=0;room-id=${channel.id};slow=0;subs-only=0 :tmi.twitch.tv ROOMSTATE #${channel.name}`,
       ].join('\r\n'),
       type: 'channels',
     }
@@ -91,6 +119,45 @@ const parseMessage = (message, socketDataStore) => {
     return {
       command: 'PONG',
       type: 'pong',
+    }
+  }
+
+  if (message.startsWith('PRIVMSG')) {
+    const [, channelName, eventTrigger, messageBody] = /^PRIVMSG #(\w+) :([\S]*)(.*)$/u.exec(message)
+    let channel = channels[channelName]
+    let user = null
+
+    if (!channel) {
+      channel = new Channel({ name: channelName })
+      channels[channelName] = channel
+    }
+
+    if (channel.isEmpty || (Math.random() >= 0.75)) {
+      user = new User({ username: faker.internet.userName().replace(/\./gu, '') })
+      users.addUser(user)
+      channel.addUser(user)
+    } else {
+      user = channel.getRandomUser()
+    }
+
+    const messageData = getMock(eventTrigger, {
+      bitsCount: 100,
+      channel: channelName,
+      channelid: channel.id,
+      color: user.color,
+      host: HOST,
+      message: messageBody,
+      messageid: uuid(),
+      timestamp: Date.now(),
+      userid: user.id,
+      username: user.username,
+      ...mri(messageBody.split(' ')),
+    })
+
+    return {
+      command: 'PRIVMSG',
+      response: `${serializeTwitchObject(messageData.tags)} ${messageData.message}`,
+      type: 'message',
     }
   }
 

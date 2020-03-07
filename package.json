@@ -44,7 +44,9 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "faker": "^4.1.0",
     "ians-logger": "^0.1.1",
+    "mri": "^1.1.4",
     "nodemon": "^2.0.2",
     "ws": "^7.2.1"
   }
