@@ -79,7 +79,7 @@ const Overlay = props => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       if (useMockServer) {
-        tmiOptions.connection = { server: 'fdgt.dev' }
+        tmiOptions.connection = { server: 'tmi.fdgt.dev' }
         }
 
       if (username) {
