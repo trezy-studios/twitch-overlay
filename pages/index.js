@@ -79,11 +79,8 @@ const Overlay = props => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       if (useMockServer) {
-        tmiOptions.connection = {
-          port: 3001,
-          server: 'localhost',
+        tmiOptions.connection = { server: 'fdgt.dev' }
         }
-      }
 
       if (username) {
         tmiOptions.identity.username = username

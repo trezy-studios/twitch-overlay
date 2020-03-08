@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "build": "next build",
-    "start": "now dev",
-    "start:mock-api": "nodemon ./twitch-mock/index.js"
+    "start": "now dev"
   },
   "dependencies": {
     "@babel/core": "^7.8.4",
@@ -40,12 +39,5 @@
     "tmi.js": "^1.5.0",
     "twitch-js": "2.0.0-beta.33"
   },
-  "license": "MIT",
-  "devDependencies": {
-    "faker": "^4.1.0",
-    "ians-logger": "^0.1.1",
-    "mri": "^1.1.4",
-    "nodemon": "^2.0.2",
-    "ws": "^7.2.1"
-  }
+  "license": "MIT"
 }
