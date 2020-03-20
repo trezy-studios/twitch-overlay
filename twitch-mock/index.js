@@ -1,6 +1,6 @@
 // Module imports
 const faker = require('faker')
-const Logger = require('ians-logger')
+const Logger = require('ians-logger').createLoggerFromName('twitch-mock-api')
 const mri = require('mri')
 const uuid = require('uuid/v4')
 const WebSocket = require('ws')

@@ -85,15 +85,34 @@ const Overlay = props => {
         })
       }, PRIORITY.HIGH)
       // eslint-disable-next-line no-unused-vars
-      twitchClient.on('cheer', (_channel, userstate, _message) => {
+      // twitchClient.on('cheer', (_channel, userstate, _message) => {
+      //   // Do your stuff.
+      //   eventQueuePush('bits', {
+      //     duration: 5000,
+      //     data: {
+      //       bits: userstate.bits,
+      //       userstate,
+      //     },
+      //   }, PRIORITY.HIGH)
+      // })
+      // eslint-disable-next-line max-params
+      twitchClient.on('subgift', (_channel, _username, _streakMonths, _recipient, _methods, userstate) => {
         // Do your stuff.
-        eventQueuePush('bits', {
+        const senderCount = Number(userstate['msg-param-sender-count'])
+        eventQueuePush('subgift', {
           duration: 5000,
           data: {
-            bits: userstate.bits,
-            userstate,
+            senderCount, _channel, _username, _streakMonths, _recipient, _methods, userstate,
           },
-        }, PRIORITY.HIGH)
+        })
+      })
+      // eslint-disable-next-line no-unused-vars
+      twitchClient.on('giftpaidupgrade', (_channel, _username, _sender, _userstate) => {
+        // Do your stuff.
+        eventQueuePush('giftpaidupgrade', {
+          duration: 5000,
+          data: {},
+        })
       })
     }
   }, [])

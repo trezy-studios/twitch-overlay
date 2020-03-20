@@ -1,6 +1,7 @@
 // Module imports
 import PropTypes from 'prop-types'
 import React from 'react'
+import { hasNext } from './event-system/queue'
 
 
 
@@ -11,11 +12,17 @@ const Alert = props => {
     type,
     username,
   } = props
-  const _handleNext = props.next
+  const _handleNext = ({ target }) => {
+    if (hasNext()) {
+      target.play()
+    }
+    props.next()
+  }
   return (
     <div className="alert" data-props={JSON.stringify(props)}>
       <video
         autoPlay
+        // eslint-disable-next-line react/jsx-no-bind
         onEnded={_handleNext}>
         <source
           src={`public/media/${type}-alert.webm`}
