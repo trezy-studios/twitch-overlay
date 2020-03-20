@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "build": "next build",
-    "start": "now dev",
-    "start:mock-api": "nodemon ./twitch-mock/index.js"
+    "start": "now dev"
   },
   "dependencies": {
     "@babel/core": "^7.8.4",
@@ -19,8 +18,7 @@
     "@fuelrats/eslint-config": "^2.1.0",
     "@fuelrats/eslint-config-react": "^2.1.0",
     "@types/tmi.js": "^1.4.0",
-    "@zeit/next-css": "^1.0.1",
-    "@zeit/next-sass": "^1.0.1",
+    "axios": "^0.19.2",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.0.1",
@@ -33,21 +31,14 @@
     "eslint-plugin-react-hooks": "^2.4.0",
     "get-all-files": "^1.0.7",
     "micro-cors": "^0.1.1",
-    "next": "^9.1.2",
-    "node-sass": "^4.13.1",
+    "next": "^9.3.1",
     "now": "^17.0.4",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "sass": "^1.26.3",
     "tmi.js": "^1.5.0",
     "twitch-js": "2.0.0-beta.33"
   },
-  "license": "MIT",
-  "devDependencies": {
-    "faker": "^4.1.0",
-    "ians-logger": "^0.1.1",
-    "mri": "^1.1.4",
-    "nodemon": "^2.0.2",
-    "ws": "^7.2.1"
-  }
+  "license": "MIT"
 }

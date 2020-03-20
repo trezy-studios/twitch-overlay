@@ -1,10 +1,4 @@
-// Style imports
-import '../scss/reset.scss'
-import '../scss/app.scss'
-
-
-
-
+/* eslint-env node */
 
 // Module imports
 import React, {
@@ -22,6 +16,7 @@ import tmi from 'tmi.js'
 import { EventHistory } from '../components/EventHistory'
 import { EventNotifications } from '../components/EventNotifications'
 import { OverlayDeco } from '../components/OverlayDeco'
+import { TaskInfo } from '../components/TaskInfo'
 import { TwitchChat } from '../components/TwitchChat'
 import { eventQueuePush, PRIORITY } from '../components/event-system/queue'
 
@@ -31,8 +26,13 @@ import { eventQueuePush, PRIORITY } from '../components/event-system/queue'
 
 // Local variables
 const tmiOptions = {
-  channels: ['#TrezyCodes'],
-  identity: {},
+  channels: [
+    process.env.TWITCH_CHANNEL,
+  ],
+  identity: {
+    password: process.env.TWITCH_ACCESS_TOKEN,
+    username: process.env.TWITCH_USERNAME,
+  },
   options: {
     debug: true,
   },
@@ -43,27 +43,12 @@ const tmiOptions = {
 
 
 const Overlay = props => {
-  const {
-    token,
-    useMockServer,
-    username,
-  } = props
+  const { useMockServer } = props
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       if (useMockServer) {
-        tmiOptions.connection = {
-          port: 3001,
-          server: 'localhost',
-        }
-      }
-
-      if (username) {
-        tmiOptions.identity.username = username
-      }
-
-      if (token) {
-        tmiOptions.identity.password = token
+        tmiOptions.connection = { server: 'tmi.fdgt.dev' }
       }
 
       const twitchClient = new tmi.Client(tmiOptions)
@@ -84,17 +69,7 @@ const Overlay = props => {
           },
         })
       }, PRIORITY.HIGH)
-      // eslint-disable-next-line no-unused-vars
-      // twitchClient.on('cheer', (_channel, userstate, _message) => {
-      //   // Do your stuff.
-      //   eventQueuePush('bits', {
-      //     duration: 5000,
-      //     data: {
-      //       bits: userstate.bits,
-      //       userstate,
-      //     },
-      //   }, PRIORITY.HIGH)
-      // })
+
       // eslint-disable-next-line max-params
       twitchClient.on('subgift', (_channel, _username, _streakMonths, _recipient, _methods, userstate) => {
         // Do your stuff.
@@ -106,6 +81,7 @@ const Overlay = props => {
           },
         })
       })
+
       // eslint-disable-next-line no-unused-vars
       twitchClient.on('giftpaidupgrade', (_channel, _username, _sender, _userstate) => {
         // Do your stuff.
@@ -119,6 +95,7 @@ const Overlay = props => {
 
   return (
     <>
+      <TaskInfo />
       <TwitchChat />
       <OverlayDeco />
       <EventNotifications />
@@ -128,20 +105,15 @@ const Overlay = props => {
 }
 
 Overlay.getInitialProps = ({ query }) => ({
-  ...query,
   useMockServer: query.useMockServer === 'true',
 })
 
 Overlay.defaultProps = {
-  token: '',
   useMockServer: false,
-  username: '',
 }
 
 Overlay.propTypes = {
-  token: PropTypes.string,
   useMockServer: PropTypes.bool,
-  username: PropTypes.string,
 }
 
 
