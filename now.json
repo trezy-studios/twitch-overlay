@@ -1,7 +1,26 @@
 {
   "version": 2,
   "scope": "trezy-studios",
+  "env": {
+    "TILTIFY_ACCESS_TOKEN": "@tiltify-access-token",
+    "TRELLO_ACCESS_TOKEN": "@trello-access-token",
+    "TRELLO_API_URL": "@trello-api-url",
+    "TRELLO_APPLICATION_KEY": "@trello-application-key",
+    "TRELLO_LIST_ID": "@trello-list-id",
+    "TWITCH_ACCESS_TOKEN": "@twitch-access-token",
+    "TWITCH_CHANNEL": "@twitch-channel",
+    "TWITCH_USERNAME": "@twitch-username"
+  },
   "build": {
-    "env": {}
+    "env": {
+      "TILTIFY_ACCESS_TOKEN": "@tiltify-access-token",
+      "TRELLO_ACCESS_TOKEN": "@trello-access-token",
+      "TRELLO_API_URL": "@trello-api-url",
+      "TRELLO_APPLICATION_KEY": "@trello-application-key",
+      "TRELLO_LIST_ID": "@trello-list-id",
+      "TWITCH_ACCESS_TOKEN": "@twitch-access-token",
+      "TWITCH_CHANNEL": "@twitch-channel",
+      "TWITCH_USERNAME": "@twitch-username"
+    }
   }
 }

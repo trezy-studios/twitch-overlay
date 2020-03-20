@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 // Module imports
 import React, {
   createRef,
@@ -16,6 +18,7 @@ import { Alert } from '../components/Alert'
 import { EventHistory } from '../components/EventHistory'
 import { EventNotifications } from '../components/EventNotifications'
 import { OverlayDeco } from '../components/OverlayDeco'
+import { TaskInfo } from '../components/TaskInfo'
 import { TwitchChat } from '../components/TwitchChat'
 
 
@@ -25,7 +28,7 @@ import { TwitchChat } from '../components/TwitchChat'
 // Local constants
 const initialEvents = [
   {
-    username: 'TrezyCodes',
+    username: process.env.TWITCH_USERNAME,
     type: 'follow',
   },
 ]
@@ -36,8 +39,13 @@ const initialEvents = [
 
 // Local variables
 const tmiOptions = {
-  channels: ['#TrezyCodes'],
-  identity: {},
+  channels: [
+    process.env.TWITCH_CHANNEL,
+  ],
+  identity: {
+    password: process.env.TWITCH_ACCESS_TOKEN,
+    username: process.env.TWITCH_USERNAME,
+  },
   options: {
     debug: true,
   },
@@ -50,11 +58,7 @@ let twitchClient = null
 
 const Overlay = props => {
   const [events, setEvents] = useState(initialEvents)
-  const {
-    token,
-    useMockServer,
-    username,
-  } = props
+  const { useMockServer } = props
   const alertRef = createRef(null)
 
   useEffect(() => {
@@ -72,14 +76,6 @@ const Overlay = props => {
     if (typeof window !== 'undefined') {
       if (useMockServer) {
         tmiOptions.connection = { server: 'tmi.fdgt.dev' }
-        }
-
-      if (username) {
-        tmiOptions.identity.username = username
-      }
-
-      if (token) {
-        tmiOptions.identity.password = token
       }
 
       twitchClient = new tmi.Client(tmiOptions)
@@ -99,6 +95,7 @@ const Overlay = props => {
           ref={alertRef}
           {...events[0]} />
       )}
+      <TaskInfo />
       <TwitchChat />
       <OverlayDeco />
       <EventNotifications />
@@ -108,20 +105,15 @@ const Overlay = props => {
 }
 
 Overlay.getInitialProps = ({ query }) => ({
-  ...query,
   useMockServer: query.useMockServer === 'true',
 })
 
 Overlay.defaultProps = {
-  token: '',
   useMockServer: false,
-  username: '',
 }
 
 Overlay.propTypes = {
-  token: PropTypes.string,
   useMockServer: PropTypes.bool,
-  username: PropTypes.string,
 }
 
 
