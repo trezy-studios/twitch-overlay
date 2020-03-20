@@ -1,14 +1,8 @@
 /* eslint-env node */
 
-// Module imports
-const withCSS = require('@zeit/next-css')
-const withSass = require('@zeit/next-sass')
+module.exports = {
 
 
-
-
-
-module.exports = withSass(withCSS({
   webpack: config => {
     config.module.rules.unshift({
       enforce: 'pre',
@@ -19,4 +13,4 @@ module.exports = withSass(withCSS({
 
     return config
   },
-}))
+}

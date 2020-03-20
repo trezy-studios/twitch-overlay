@@ -1,11 +1,3 @@
-// Style imports
-import '../scss/reset.scss'
-import '../scss/app.scss'
-
-
-
-
-
 // Module imports
 import React, {
   createRef,
