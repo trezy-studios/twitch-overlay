@@ -14,13 +14,20 @@ import { EventHistoryContext } from '../context/EventHistoryContext'
 
 
 
+// Local constants
+const MAX_EVENTS_TO_DISPLAY = 7
+
+
+
+
+
 // eslint-disable-next-line react/jsx-no-literals
 export const EventHistory = () => {
   const { events } = useContext(EventHistoryContext)
 
   return (
     <ol className="events-history">
-      {events.map(event => {
+      {events.slice(0, MAX_EVENTS_TO_DISPLAY).map(event => {
         const {
           id,
           type,
@@ -29,7 +36,7 @@ export const EventHistory = () => {
         return (
           <li key={id}>
             <i className={['icon', type].join(' ')} />
-            {`${type} Event!`}
+            {event['display-name']}
           </li>
         )
       })}

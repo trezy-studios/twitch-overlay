@@ -23,8 +23,8 @@ const EventHistoryContextProvider = props => {
 
   const addEvent = event => {
     setEvents(previousEvents => ([
-      ...previousEvents,
       event,
+      ...previousEvents,
     ]))
   }
 
