@@ -1,0 +1,22 @@
+.events-history {
+  bottom: 0;
+  display: flex;
+  left: 0;
+  position: absolute;
+  right: 0;
+
+  li {
+    padding: 10px;
+
+    .icon {
+      margin-bottom: -4px;
+      margin-right: -10px;
+    }
+  }
+
+  @for $i from 2 through 4 {
+    :nth-child(#{$i}) {
+      opacity: 100% / $i;
+    }
+  }
+}

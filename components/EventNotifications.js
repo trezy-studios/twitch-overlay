@@ -1,19 +1,45 @@
-/* eslint-disable react/jsx-no-bind */
+// Module imports
 import React from 'react'
-import EventHost from './event-system/EventHost'
-// import SubscriptionEvent from './SubscriptionEvent'
-// import HostEvent from './HostEvent'
-// import RaidEvent from './RaidEvent'
-// import TiltifyDonationEvent from './TiltifyDonationEvent'
-import { Alert } from './Alert'
 
-// EventHost.register('subscription', SubscriptionEvent)
-// EventHost.register('resubscription', React.forwardRef((props, ref) => <Alert ref={ref} type="resubscription" username={JSON.stringify(props)} />))
+
+
+
+
+// Local imports
+import { BitsAlert } from './BitsAlert'
+import { hasNext } from './event-system/queue'
+import EventHost from './event-system/EventHost'
+
+
+
+
+
 // eslint-disable-next-line react/prop-types
-EventHost.register('bits', props => (<Alert bits={props.data.userstate.bits} next={props.next} type="bits" username={props.data.userstate['display-name']} />))
-// EventHost.register('host', HostEvent)
-// EventHost.register('raid', RaidEvent)
-// EventHost.register('tiltify-donation', TiltifyDonationEvent)
+EventHost.register('bits', props => {
+  const {
+    data,
+    next,
+  } = props
+
+  const handleNext = ({ target }) => {
+    if (hasNext()) {
+      target.play()
+    }
+
+    next()
+  }
+
+  return (
+    <BitsAlert
+      bits={data.userstate.bits}
+      username={data.userstate['display-name']}
+      onEnded={handleNext} />
+  )
+})
+
+
+
+
 
 export const EventNotifications = () => (
   <div className="event-notifications">
