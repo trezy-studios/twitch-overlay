@@ -17,12 +17,12 @@ module.exports = {
     'jsx-a11y/media-has-caption': ['off'],
 
     // react
+    'react/jsx-curly-newline': ['error', 'never'],
     'react/function-component-definition': ['error', {
       namedComponents: 'arrow-function',
       unnamedComponents: 'arrow-function',
     }],
-
-    'react/jsx-curly-newline': ['error', 'never'],
+    'react/jsx-no-bind': ['off'],
 
     // react-hooks
     'react-hooks/exhaustive-deps': ['off'],
