@@ -1,37 +1,38 @@
-import React from 'react'
+// Module imports
+import React, {
+  useContext,
+} from 'react'
+
+
+
+
+
+// Local imports
+import { EventHistoryContext } from '../context/EventHistoryContext'
+
+
+
 
 
 // eslint-disable-next-line react/jsx-no-literals
-export const EventHistory = () => (
-  <ol className="events-history">
-    <li className="donation">
-      <i className="icon donation" />
-      {'Event!'}
-    </li>
+export const EventHistory = () => {
+  const { events } = useContext(EventHistoryContext)
 
-    <li className="raid">
-      <i className="icon raid" />
-      {'Event!'}
-    </li>
+  return (
+    <ol className="events-history">
+      {events.map(event => {
+        const {
+          id,
+          type,
+        } = event
 
-    <li className="subgift">
-      <i className="icon subgift" />
-      {'Event!'}
-    </li>
-
-    <li className="bits">
-      <i className="icon bits" />
-      {'Event!'}
-    </li>
-
-    <li className="subscription">
-      <i className="icon subscription" />
-      {'Event!'}
-    </li>
-
-    <li className="resubscription">
-      <i className="icon resubscription" />
-      {'Event!'}
-    </li>
-  </ol>
-)
+        return (
+          <li key={id}>
+            <i className={['icon', type].join(' ')} />
+            {`${type} Event!`}
+          </li>
+        )
+      })}
+    </ol>
+  )
+}

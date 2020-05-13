@@ -59,10 +59,11 @@ export const useTwitchEvents = (options, dependencies = []) => {
         eventQueuePush('bits', {
           duration: 5000,
           data: {
+            ...userstate,
             bits,
             channel,
             message,
-            userstate,
+            type: 'bits',
           },
         }, PRIORITY.MEDIUM_LOW)
       })

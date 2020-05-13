@@ -8,6 +8,7 @@ import PropTypes from 'prop-types'
 
 // Local imports
 import { EventHistory } from '../components/EventHistory'
+import { EventHistoryContextProvider } from '../context/EventHistoryContext'
 import { EventNotifications } from '../components/EventNotifications'
 import { OverlayDeco } from '../components/OverlayDeco'
 import { TaskInfo } from '../components/TaskInfo'
@@ -24,13 +25,13 @@ const Overlay = props => {
   useTwitchEvents({ useMockServer })
 
   return (
-    <>
+    <EventHistoryContextProvider>
       <TaskInfo />
       <TwitchChat />
       <OverlayDeco />
       <EventNotifications />
       <EventHistory />
-    </>
+    </EventHistoryContextProvider>
   )
 }
 

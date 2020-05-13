@@ -1,11 +1,14 @@
 // Module imports
-import React from 'react'
+import React, {
+  useContext,
+} from 'react'
 
 
 
 
 
 // Local imports
+import { EventHistoryContext } from '../context/EventHistoryContext'
 import { BitsAlert } from './BitsAlert'
 import { hasNext } from './event-system/queue'
 import EventHost from './event-system/EventHost'
@@ -20,19 +23,21 @@ EventHost.register('bits', props => {
     data,
     next,
   } = props
+  const { addEvent } = useContext(EventHistoryContext)
 
   const handleNext = ({ target }) => {
     if (hasNext()) {
       target.play()
     }
 
+    addEvent(data)
     next()
   }
 
   return (
     <BitsAlert
-      bits={data.userstate.bits}
-      username={data.userstate['display-name']}
+      bits={data.bits}
+      username={data['display-name']}
       onEnded={handleNext} />
   )
 })
