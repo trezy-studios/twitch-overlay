@@ -1,0 +1,42 @@
+@keyframes raid-event-icon-animation {
+  from {
+    background-position: left center;
+  }
+
+  to {
+    background-position: right center;
+  }
+}
+
+.icon {
+  background-position: 0 center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: inline-block;
+  height: 32px;
+  width: 32px;
+
+  &.bits {
+    background-image: url('/images/bits-event-icon.png');
+  }
+
+  &.donation {
+    background-image: url('/images/donation-event-icon.png');
+  }
+
+  &.subscription {
+    background-image: url('/images/subscription-event-icon.png');
+  }
+
+  &.resubscription {
+    background-image: url('/images/resubscription-event-icon.png');
+  }
+
+  &.raid {
+    animation-duration: 1s;
+    animation-timing-function: steps(5);
+    animation-iteration-count: infinite;
+    animation-name: raid-event-icon-animation;
+    background-image: url('/images/raid-event-icon.png');
+  }
+}

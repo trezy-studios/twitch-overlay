@@ -1,45 +1,44 @@
 // Module imports
 import PropTypes from 'prop-types'
-import React, {
-  forwardRef,
-} from 'react'
+import React from 'react'
 
 
 
 
 
-const Alert = forwardRef((props, ref) => {
+const Alert = props => {
   const {
+    children,
+    onEnded,
     type,
-    username,
   } = props
 
   return (
     <div className="alert">
       <video
-        ref={ref}
-        autoPlay>
+        autoPlay
+        onEnded={onEnded}>
         <source
-          src={`/media/${type}-alert.webm`}
+          src={`public/media/${type}-alert.webm`}
+          type="video/webm" />
+        <source
+          src="/media/follow-alert.webm"
           type="video/webm" />
       </video>
 
-      {(type === 'follow') && (
-        <span>
-          <strong>{username}</strong>{' has followed!'}
-        </span>
-      )}
+      {children}
     </div>
   )
-})
+}
 
 Alert.defaultProps = {
-  username: null,
+  onEnded: () => {},
 }
 
 Alert.propTypes = {
+  children: PropTypes.node.isRequired,
+  onEnded: PropTypes.func,
   type: PropTypes.string.isRequired,
-  username: PropTypes.string,
 }
 
 
