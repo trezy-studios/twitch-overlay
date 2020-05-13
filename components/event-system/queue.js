@@ -61,6 +61,7 @@ export function peekNext () {
 }
 
 export function eventQueuePush (event, data, priority) {
+  data.type=event
   if (eventQueue[priority]) {
     const emptyBeforePush = eventQueueEmpty()
     eventQueue[priority].push({ type: event, data })
