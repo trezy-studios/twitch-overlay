@@ -68,8 +68,22 @@ export const useTwitchEvents = (options, dependencies = []) => {
         }, PRIORITY.MEDIUM_LOW)
       })
 
+      twitchClient.on('subscription', (channel, username, method, message, userstate) => {
+        eventQueuePush('subscription', {
+          duration: 5000,
+          data: {
+            ...userstate,
+            channel,
+            plan: method.plan,
+            planName: method.planName,
+            message,
+            type: 'subscription',
+          },
+        }, PRIORITY.MEDIUM_LOW)
+      })
+
       return () => {
-        twitchClient.removeAllListeners('cheer')
+        twitchClient.removeAllListeners()
         twitchClient.disconnect()
       }
     }
