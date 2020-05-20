@@ -11,6 +11,7 @@ import React, {
 import { EventHistoryContext } from '../context/EventHistoryContext'
 import { BitsAlert } from './BitsAlert'
 import { RaidAlert } from './RaidAlert'
+import { ResubscriptionAlert } from './ResubscriptionAlert'
 import { SubscriptionAlert } from './SubscriptionAlert'
 import { hasNext } from './event-system/queue'
 import EventHost from './event-system/EventHost'
@@ -64,6 +65,32 @@ EventHost.register('raid', props => {
     <RaidAlert
       username={data.username}
       viewers={data.viewers}
+      onEnded={handleNext} />
+  )
+})
+
+EventHost.register('resubscription', props => {
+  const {
+    data,
+    next,
+  } = props
+  const { addEvent } = useContext(EventHistoryContext)
+
+  const handleNext = ({ target }) => {
+    if (hasNext()) {
+      target.play()
+    }
+
+    addEvent(data)
+    next()
+  }
+
+  return (
+    <ResubscriptionAlert
+      months={data.months}
+      plan={data.plan}
+      planName={data.planName}
+      username={data.username}
       onEnded={handleNext} />
   )
 })

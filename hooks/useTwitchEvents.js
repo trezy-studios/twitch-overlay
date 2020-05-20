@@ -80,6 +80,20 @@ export const useTwitchEvents = (options, dependencies = []) => {
         }, PRIORITY.MEDIUM_LOW)
       })
 
+      // eslint-disable-next-line max-params
+      twitchClient.on('resub', (channel, username, months, message, userstate, method) => {
+        eventQueuePush('resubscription', {
+          duration: 5000,
+          data: {
+            months,
+            plan: method.plan,
+            planName: method.planName,
+            type: 'resubscription',
+            username,
+          },
+        }, PRIORITY.MEDIUM_LOW)
+      })
+
       twitchClient.on('subscription', (channel, username, method) => {
         eventQueuePush('subscription', {
           duration: 5000,

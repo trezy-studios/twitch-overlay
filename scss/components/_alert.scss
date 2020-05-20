@@ -9,11 +9,12 @@
   top: 0;
   z-index: 1;
 
-  span {
+  > :not(video) {
     left: 50%;
     position: absolute;
+    text-align: center;
     top: 50%;
-    transform: translate(-50%, 7rem);
+    transform: translate(-50%, 8rem);
     z-index: 1;
   }
 }
