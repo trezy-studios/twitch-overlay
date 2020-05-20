@@ -31,12 +31,13 @@ export const EventHistory = () => {
         const {
           id,
           type,
+          username,
         } = event
 
         return (
           <li key={id}>
             <i className={['icon', type].join(' ')} />
-            {event['display-name']}
+            {username}
           </li>
         )
       })}

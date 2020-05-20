@@ -9,7 +9,10 @@ import tmi from 'tmi.js'
 
 
 // Local imports
-import { eventQueuePush, PRIORITY } from '../components/event-system/queue'
+import {
+  eventQueuePush,
+  PRIORITY,
+} from '../components/event-system/queue'
 
 
 
@@ -53,31 +56,38 @@ export const useTwitchEvents = (options, dependencies = []) => {
       twitchClient.connect()
 
       // eslint-disable-next-line max-params
-      twitchClient.on('cheer', (channel, userstate, message) => {
+      twitchClient.on('cheer', (channel, userstate) => {
         const bits = Number(userstate.bits)
 
         eventQueuePush('bits', {
           duration: 5000,
           data: {
-            ...userstate,
             bits,
-            channel,
-            message,
             type: 'bits',
+            username: userstate.username,
           },
         }, PRIORITY.MEDIUM_LOW)
       })
 
-      twitchClient.on('subscription', (channel, username, method, message, userstate) => {
+      twitchClient.on('raided', (channel, username, viewers) => {
+        eventQueuePush('raid', {
+          duration: 5000,
+          data: {
+            type: 'raid',
+            username,
+            viewers,
+          },
+        }, PRIORITY.MEDIUM_LOW)
+      })
+
+      twitchClient.on('subscription', (channel, username, method) => {
         eventQueuePush('subscription', {
           duration: 5000,
           data: {
-            ...userstate,
-            channel,
             plan: method.plan,
             planName: method.planName,
-            message,
             type: 'subscription',
+            username,
           },
         }, PRIORITY.MEDIUM_LOW)
       })

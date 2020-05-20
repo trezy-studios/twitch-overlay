@@ -10,6 +10,7 @@ import React, {
 // Local imports
 import { EventHistoryContext } from '../context/EventHistoryContext'
 import { BitsAlert } from './BitsAlert'
+import { RaidAlert } from './RaidAlert'
 import { SubscriptionAlert } from './SubscriptionAlert'
 import { hasNext } from './event-system/queue'
 import EventHost from './event-system/EventHost'
@@ -38,7 +39,31 @@ EventHost.register('bits', props => {
   return (
     <BitsAlert
       bits={data.bits}
-      username={data['display-name']}
+      username={data.username}
+      onEnded={handleNext} />
+  )
+})
+
+EventHost.register('raid', props => {
+  const {
+    data,
+    next,
+  } = props
+  const { addEvent } = useContext(EventHistoryContext)
+
+  const handleNext = ({ target }) => {
+    if (hasNext()) {
+      target.play()
+    }
+
+    addEvent(data)
+    next()
+  }
+
+  return (
+    <RaidAlert
+      username={data.username}
+      viewers={data.viewers}
       onEnded={handleNext} />
   )
 })
@@ -63,7 +88,7 @@ EventHost.register('subscription', props => {
     <SubscriptionAlert
       plan={data.plan}
       planName={data.planName}
-      username={data['display-name']}
+      username={data.username}
       onEnded={handleNext} />
   )
 })
