@@ -26,7 +26,7 @@ export const EventHistory = () => {
   const { events } = useContext(EventHistoryContext)
 
   return (
-    <ol className="events-history">
+    <ol className="event-history">
       {events.slice(0, MAX_EVENTS_TO_DISPLAY).map(event => {
         const {
           id,
@@ -36,8 +36,10 @@ export const EventHistory = () => {
 
         return (
           <li key={id}>
-            <i className={['icon', type].join(' ')} />
-            {username}
+            <div>
+              <i className={['icon', type].join(' ')} />
+              {username}
+            </div>
           </li>
         )
       })}

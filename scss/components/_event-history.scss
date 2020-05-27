@@ -1,4 +1,4 @@
-.events-history {
+.event-history {
   bottom: 0;
   display: flex;
   left: 0;
@@ -6,16 +6,26 @@
   right: 0;
 
   li {
+    animation-duration: 3s, 0.2s;
+    animation-name: fade-in-from-left, grow-horizontal-padding;
+    display: flex;
+    justify-content: flex-end;
     padding: 10px;
 
-    .icon {
-      margin-bottom: -4px;
-      margin-right: -10px;
+    > div {
+      display: flex;
+      transition-duration: 0.5s;
+      transition-property: opacity;
     }
   }
 
+  .icon {
+    margin-bottom: -4px;
+    margin-right: -10px;
+  }
+
   @for $i from 2 through 7 {
-    :nth-child(#{$i}) {
+    :nth-child(#{$i}) > div {
       opacity: 100% / $i;
     }
   }
