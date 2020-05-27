@@ -9,8 +9,10 @@
   width: 25vw;
 
   dt, dd {
+    animation-delay: 10s;
     animation-duration: 1s;
-    animation-name: fade-in-from-bottom;
+    animation-fill-mode: both;
+    animation-name: partial-fade-out;
   }
 
   dt {

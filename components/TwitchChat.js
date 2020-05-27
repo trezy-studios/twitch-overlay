@@ -23,7 +23,6 @@ const BOT_NAME_BLACKLIST = [
   'PretzelRocks',
   'Moobot',
 ]
-const MESSAGE_DURATION = 10000
 const NAME_COLOR_LIGHTEN_INCREMENT = 10
 
 
@@ -56,17 +55,6 @@ const TwitchChat = props => {
         ...oldMessages,
         messageData,
       ]))
-
-      setTimeout(() => {
-        setMessages(oldMessages => {
-          // eslint-disable-next-line arrow-body-style
-          const filteredMessages = oldMessages.filter(({ id }) => {
-            return id !== messageData.id
-          })
-
-          return filteredMessages
-        })
-      }, MESSAGE_DURATION)
     },
     useMockServer,
   })
