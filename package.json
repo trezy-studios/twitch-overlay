@@ -39,7 +39,8 @@
     "sass": "^1.26.3",
     "tinycolor2": "^1.4.1",
     "tmi.js": "^1.5.0",
-    "twitch-js": "2.0.0-beta.33"
+    "twitch-js": "2.0.0-beta.33",
+    "uuid": "^8.1.0"
   },
   "license": "MIT"
 }

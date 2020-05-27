@@ -2,6 +2,7 @@
 import React, {
   useContext,
 } from 'react'
+import { v4 as uuid } from 'uuid'
 import PropTypes from 'prop-types'
 
 
@@ -141,6 +142,7 @@ const EventNotifications = props => {
         duration: 5000,
         data: {
           bits,
+          id: userstate.id,
           type: 'bits',
           username: userstate.username,
         },
@@ -150,6 +152,7 @@ const EventNotifications = props => {
       eventQueuePush('raid', {
         duration: 5000,
         data: {
+          id: uuid(),
           type: 'raid',
           username,
           viewers,
@@ -161,6 +164,7 @@ const EventNotifications = props => {
       eventQueuePush('resubscription', {
         duration: 5000,
         data: {
+          id: uuid(),
           months,
           plan: method.plan,
           planName: method.planName,
@@ -173,6 +177,7 @@ const EventNotifications = props => {
       eventQueuePush('subscription', {
         duration: 5000,
         data: {
+          id: uuid(),
           plan: method.plan,
           planName: method.planName,
           type: 'subscription',
