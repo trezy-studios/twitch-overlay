@@ -1,0 +1,38 @@
+.twitch-chat {
+  bottom: 25vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: absolute;
+  right: 0;
+  top: 25vh;
+  width: 25vw;
+
+  dt, dd {
+    animation-duration: 1s;
+    animation-name: fade-in-from-bottom;
+  }
+
+  dt {
+    position: relative;
+
+    &:after {
+      content: ' says:',
+    }
+
+    &:before {
+      background-color: currentColor;
+      bottom: 0;
+      content: '';
+      height: 1px;
+      left: 0;
+      position: absolute;
+      right: 0;
+      z-index: -1;
+    }
+  }
+
+  dd {
+    margin-left: 2rem;
+  }
+}
