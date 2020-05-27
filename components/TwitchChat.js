@@ -19,6 +19,10 @@ import { useTwitchEvents } from '../hooks/useTwitchEvents'
 
 
 // Local constants
+const BOT_NAME_BLACKLIST = [
+  'PretzelRocks',
+  'Moobot',
+]
 const MESSAGE_DURATION = 10000
 const NAME_COLOR_LIGHTEN_INCREMENT = 10
 
@@ -34,7 +38,7 @@ const TwitchChat = props => {
 
   useTwitchEvents({
     onChat: (channel, userstate, message, self) => {
-      if (self) {
+      if (self || BOT_NAME_BLACKLIST.includes(userstate['display-name'])) {
         return
       }
 
