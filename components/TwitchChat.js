@@ -38,7 +38,10 @@ const TwitchChat = props => {
 
   useTwitchEvents({
     onChat: (channel, userstate, message, self) => {
-      if (self || BOT_NAME_BLACKLIST.includes(userstate['display-name'])) {
+      const isBot = BOT_NAME_BLACKLIST.includes(userstate['display-name'])
+      const isCommand = message.startsWith('!')
+
+      if (self || isBot || isCommand) {
         return
       }
 
