@@ -2,18 +2,24 @@
 import React, {
   useContext,
 } from 'react'
+import PropTypes from 'prop-types'
 
 
 
 
 
 // Local imports
+import {
+  eventQueuePush,
+  hasNext,
+  PRIORITY,
+} from './event-system/queue'
 import { EventHistoryContext } from '../context/EventHistoryContext'
 import { BitsAlert } from './BitsAlert'
 import { RaidAlert } from './RaidAlert'
 import { ResubscriptionAlert } from './ResubscriptionAlert'
 import { SubscriptionAlert } from './SubscriptionAlert'
-import { hasNext } from './event-system/queue'
+import { useTwitchEvents } from '../hooks/useTwitchEvents'
 import EventHost from './event-system/EventHost'
 
 
@@ -124,8 +130,76 @@ EventHost.register('subscription', props => {
 
 
 
-export const EventNotifications = () => (
-  <div className="event-notifications">
-    <EventHost />
-  </div>
-)
+const EventNotifications = props => {
+  const { useMockServer } = props
+
+  useTwitchEvents({
+    onCheer: (channel, userstate) => {
+      const bits = Number(userstate.bits)
+
+      eventQueuePush('bits', {
+        duration: 5000,
+        data: {
+          bits,
+          type: 'bits',
+          username: userstate.username,
+        },
+      }, PRIORITY.MEDIUM_LOW)
+    },
+    onRaid: (channel, username, viewers) => {
+      eventQueuePush('raid', {
+        duration: 5000,
+        data: {
+          type: 'raid',
+          username,
+          viewers,
+        },
+      }, PRIORITY.MEDIUM_LOW)
+    },
+    // eslint-disable-next-line max-params
+    onResub: (channel, username, months, message, userstate, method) => {
+      eventQueuePush('resubscription', {
+        duration: 5000,
+        data: {
+          months,
+          plan: method.plan,
+          planName: method.planName,
+          type: 'resubscription',
+          username,
+        },
+      }, PRIORITY.MEDIUM_LOW)
+    },
+    onSub: (channel, username, method) => {
+      eventQueuePush('subscription', {
+        duration: 5000,
+        data: {
+          plan: method.plan,
+          planName: method.planName,
+          type: 'subscription',
+          username,
+        },
+      }, PRIORITY.MEDIUM_LOW)
+    },
+    useMockServer,
+  })
+
+  return (
+    <div className="event-notifications">
+      <EventHost />
+    </div>
+  )
+}
+
+EventNotifications.defaultProps = {
+  useMockServer: false,
+}
+
+EventNotifications.propTypes = {
+  useMockServer: PropTypes.bool,
+}
+
+
+
+
+
+export { EventNotifications }

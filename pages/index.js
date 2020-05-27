@@ -13,7 +13,6 @@ import { EventNotifications } from '../components/EventNotifications'
 import { OverlayDeco } from '../components/OverlayDeco'
 import { TaskInfo } from '../components/TaskInfo'
 import { TwitchChat } from '../components/TwitchChat'
-import { useTwitchEvents } from '../hooks/useTwitchEvents'
 
 
 
@@ -22,14 +21,14 @@ import { useTwitchEvents } from '../hooks/useTwitchEvents'
 const Overlay = props => {
   const { useMockServer } = props
 
-  useTwitchEvents({ useMockServer })
-
   return (
     <EventHistoryContextProvider>
       <TaskInfo />
-      <TwitchChat />
+      <TwitchChat
+        useMockServer={useMockServer} />
       <OverlayDeco />
-      <EventNotifications />
+      <EventNotifications
+        useMockServer={useMockServer} />
       <EventHistory />
     </EventHistoryContextProvider>
   )
