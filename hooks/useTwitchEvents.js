@@ -8,17 +8,7 @@ import tmi from 'tmi.js'
 
 
 
-// Local imports
-import {
-  eventQueuePush,
-  PRIORITY,
-} from '../components/event-system/queue'
-
-
-
-
-
-// Local variables
+// Local constants
 const tmiOptions = {
   channels: [
     process.env.TWITCH_CHANNEL,
@@ -36,79 +26,92 @@ const tmiOptions = {
 
 
 
+// Local variables
+let connectionCount = 0
+let twitchClient = null
+
+
+
+
+
 export const useTwitchEvents = (options, dependencies = []) => {
-  const { useMockServer } = options
+  const {
+    onChat,
+    onCheer,
+    onRaid,
+    onResub,
+    onSub,
+    useMockServer,
+  } = options
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      if (useMockServer) {
-        tmiOptions.connection = {
-          server: 'tmi.fdgt.dev',
+      if (!twitchClient) {
+        if (useMockServer) {
+          tmiOptions.connection = {
+            // secure: true,
+            server: 'irc.fdgt.dev',
+            // server: '161.35.98.228',
+          }
         }
-      }
 
-      const twitchClient = new tmi.Client(tmiOptions)
+        twitchClient = new tmi.Client(tmiOptions)
 
-      if (useMockServer) {
+        // if (useMockServer) {
         window.twitchClient = twitchClient
+        // }
+
+        twitchClient.connect()
       }
 
-      twitchClient.connect()
+      if (onChat) {
+        twitchClient.on('chat', onChat)
+      }
 
-      // eslint-disable-next-line max-params
-      twitchClient.on('cheer', (channel, userstate) => {
-        const bits = Number(userstate.bits)
+      if (onCheer) {
+        twitchClient.on('cheer', onCheer)
+      }
 
-        eventQueuePush('bits', {
-          duration: 5000,
-          data: {
-            bits,
-            type: 'bits',
-            username: userstate.username,
-          },
-        }, PRIORITY.MEDIUM_LOW)
-      })
+      if (onRaid) {
+        twitchClient.on('raided', onRaid)
+      }
 
-      twitchClient.on('raided', (channel, username, viewers) => {
-        eventQueuePush('raid', {
-          duration: 5000,
-          data: {
-            type: 'raid',
-            username,
-            viewers,
-          },
-        }, PRIORITY.MEDIUM_LOW)
-      })
+      if (onResub) {
+        twitchClient.on('resub', onResub)
+      }
 
-      // eslint-disable-next-line max-params
-      twitchClient.on('resub', (channel, username, months, message, userstate, method) => {
-        eventQueuePush('resubscription', {
-          duration: 5000,
-          data: {
-            months,
-            plan: method.plan,
-            planName: method.planName,
-            type: 'resubscription',
-            username,
-          },
-        }, PRIORITY.MEDIUM_LOW)
-      })
+      if (onSub) {
+        twitchClient.on('subscription', onSub)
+      }
 
-      twitchClient.on('subscription', (channel, username, method) => {
-        eventQueuePush('subscription', {
-          duration: 5000,
-          data: {
-            plan: method.plan,
-            planName: method.planName,
-            type: 'subscription',
-            username,
-          },
-        }, PRIORITY.MEDIUM_LOW)
-      })
+      connectionCount += 1
 
       return () => {
-        twitchClient.removeAllListeners()
-        twitchClient.disconnect()
+        connectionCount -= 1
+
+        if (onChat) {
+          twitchClient.off('chat', onChat)
+        }
+
+        if (onCheer) {
+          twitchClient.off('cheer', onCheer)
+        }
+
+        if (onRaid) {
+          twitchClient.off('raided', onRaid)
+        }
+
+        if (onResub) {
+          twitchClient.off('resub', onResub)
+        }
+
+        if (onSub) {
+          twitchClient.off('subscription', onSub)
+        }
+
+        if (!connectionCount) {
+          twitchClient.disconnect()
+        }
       }
     }
 
