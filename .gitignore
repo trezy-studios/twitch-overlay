@@ -9,3 +9,5 @@ yarn-error.log
 *_AME/
 Adobe After Effects Auto-Save/
 node_modules/
+
+.vercel
