@@ -9,6 +9,16 @@ import tmi from 'tmi.js'
 
 
 // Local constants
+const twitchClients = {
+  mock: {
+    client: null,
+    connectionCount: 0,
+  },
+  real: {
+    client: null,
+    connectionCount: 0,
+  },
+}
 const tmiOptions = {
   channels: [
     process.env.TWITCH_CHANNEL,
@@ -26,14 +36,6 @@ const tmiOptions = {
 
 
 
-// Local variables
-let connectionCount = 0
-let twitchClient = null
-
-
-
-
-
 export const useTwitchEvents = (options, dependencies = []) => {
   const {
     onChat,
@@ -44,25 +46,27 @@ export const useTwitchEvents = (options, dependencies = []) => {
     useMockServer,
   } = options
 
+  let twitchConnection = twitchClients.real
+
+  if (useMockServer) {
+    tmiOptions.connection = { server: 'irc.fdgt.dev' }
+    twitchConnection = twitchClients.mock
+  }
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      if (!twitchClient) {
+      if (!twitchConnection.client) {
+        twitchConnection.client = new tmi.Client(tmiOptions)
+
         if (useMockServer) {
-          tmiOptions.connection = {
-            // secure: true,
-            server: 'irc.fdgt.dev',
-            // server: '161.35.98.228',
-          }
+          window.twitchClient = twitchConnection.client
         }
 
-        twitchClient = new tmi.Client(tmiOptions)
-
-        // if (useMockServer) {
-        window.twitchClient = twitchClient
-        // }
-
-        twitchClient.connect()
+        twitchConnection.client.connect()
       }
+
+      const twitchClient = twitchConnection.client
+      window.twitchClient = twitchConnection.client
 
       if (onChat) {
         twitchClient.on('chat', onChat)
@@ -84,32 +88,34 @@ export const useTwitchEvents = (options, dependencies = []) => {
         twitchClient.on('subscription', onSub)
       }
 
-      connectionCount += 1
+      twitchConnection.connectionCount += 1
+
+      console.log({ off: twitchClient?.off })
 
       return () => {
-        connectionCount -= 1
+        twitchConnection.connectionCount -= 1
 
-        if (onChat) {
-          twitchClient.off('chat', onChat)
-        }
+        // if (onChat) {
+        //   twitchClient.off('chat', onChat)
+        // }
 
-        if (onCheer) {
-          twitchClient.off('cheer', onCheer)
-        }
+        // if (onCheer) {
+        //   twitchClient.off('cheer', onCheer)
+        // }
 
-        if (onRaid) {
-          twitchClient.off('raided', onRaid)
-        }
+        // if (onRaid) {
+        //   twitchClient.off('raided', onRaid)
+        // }
 
-        if (onResub) {
-          twitchClient.off('resub', onResub)
-        }
+        // if (onResub) {
+        //   twitchClient.off('resub', onResub)
+        // }
 
-        if (onSub) {
-          twitchClient.off('subscription', onSub)
-        }
+        // if (onSub) {
+        //   twitchClient.off('subscription', onSub)
+        // }
 
-        if (!connectionCount) {
+        if (!twitchConnection.connectionCount) {
           twitchClient.disconnect()
         }
       }
