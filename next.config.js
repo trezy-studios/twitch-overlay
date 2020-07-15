@@ -15,9 +15,6 @@ module.exports = {
       enforce: 'pre',
       exclude: /node_modules/u,
       loader: 'eslint-loader',
-      options: {
-        fix: true,
-      },
       test: /\.js$/u,
     })
 

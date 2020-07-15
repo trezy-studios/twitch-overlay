@@ -1,195 +1,52 @@
 // Module imports
 import React, {
   useCallback,
-  useEffect,
+  useContext,
   useRef,
-  useState,
 } from 'react'
-import {
-  animated,
-  useTransition,
-} from 'react-spring'
-import PropTypes from 'prop-types'
-import tinycolor from 'tinycolor2'
 
 
 
 
 
 // Local imports
-import { useTwitchEvents } from '../hooks/useTwitchEvents'
+import { TwitchChatMessage } from './TwitchChatMessage'
+import { TwitchContext } from '../context/TwitchContext'
 
 
 
 
 
-// Local constants
-const BOT_NAME_BLACKLIST = [
-  'PretzelRocks',
-  'Moobot',
-]
-const CHANNEL_ID = 72632519
-const MAX_MESSAGES = 10
-const NAME_COLOR_LIGHTEN_INCREMENT = 10
-
-
-
-
-
-const TwitchChat = props => {
-  const { useMockServer } = props
-  const [badges, setBadges] = useState(null)
-  const [messages, setMessages] = useState([])
+const TwitchChat = () => {
+  const {
+    messages,
+    deleteMessage,
+  } = useContext(TwitchContext)
   const colorCache = useRef({})
-  const currentColorCache = colorCache.current
-  const transitions = useTransition(messages, message => message.id, {
-    from: {
-      opacity: '0',
-      transform: 'translateY(100%)',
-    },
-    enter: {
-      opacity: '1',
-      transform: 'translateY(0)',
-    },
-  })
 
-  const addMessage = useCallback(message => {
-    setMessages(oldMessages => ([
-      ...oldMessages,
-      message,
-    ].slice(-MAX_MESSAGES)))
-  }, [setMessages])
-
-  const handleChat = useCallback((channel, userstate, message, self) => {
-    const isBot = BOT_NAME_BLACKLIST.includes(userstate['display-name'])
-    const isCommand = message.startsWith('!')
-
-    if (self || isBot || isCommand) {
-      return
-    }
-
-    addMessage({
-      badges: userstate.badges,
-      color: tinycolor(userstate.color),
-      from: userstate['display-name'],
-      message,
-      id: userstate.id,
-    })
-  }, [addMessage])
-
-  const handleCheer = useCallback((channel, userstate, message) => {
-    addMessage({
-      badges: userstate.badges,
-      color: tinycolor(userstate.color),
-      from: userstate['display-name'],
-      message,
-      id: userstate.id,
-    })
-  }, [addMessage])
-
-  useEffect(() => {
-    (async () => {
-      const responses = await Promise.all([
-        fetch('https://badges.twitch.tv/v1/badges/global/display'),
-        fetch(`https://badges.twitch.tv/v1/badges/channels/${CHANNEL_ID}/display`),
-      ])
-      const [
-        globalBadges,
-        channelBadges,
-      ] = await Promise.all(responses.map(response => response.json()))
-      setBadges({
-        ...globalBadges.badge_sets,
-        ...channelBadges.badge_sets,
-      })
-    })()
-  }, [])
-
-  useTwitchEvents({
-    onChat: handleChat,
-    onCheer: handleCheer,
-    useMockServer,
-  })
+  const createRemover = useCallback(messageID => () => {
+    deleteMessage(messageID)
+  }, [deleteMessage])
 
   return (
     <div className="twitch-chat">
       <ol>
-        {transitions.map((transitionData, index) => {
-          const {
-            item: messageData,
-            key: messageKey,
-            props: messageProps,
-          } = transitionData
-          const {
-            badges: userBadges,
-            from,
-            message,
-          } = messageData
-          const previousMessageSender = messages[index - 1]?.from
-          const isFromPreviousMessageSender = (previousMessageSender === from)
-          let { color } = messageData
-
-          if (!isFromPreviousMessageSender) {
-            const colorHash = `#${color.toHex()}`
-
-            if (currentColorCache[colorHash]) {
-              color = tinycolor(currentColorCache[colorHash])
-            } else {
-              while (!tinycolor.isReadable('#1a1a1a', color)) {
-                color.lighten(NAME_COLOR_LIGHTEN_INCREMENT)
-              }
-
-              currentColorCache[colorHash] = `#${color.toHex()}`
-            }
-          }
+        {messages.map((message, index) => {
+          const previousMessageSender = messages[index - 1]?.user.name
+          const isFromPreviousMessageSender = (previousMessageSender === message.user.name)
 
           return (
-            <animated.li
-              key={messageKey}
-              style={messageProps}>
-              {!isFromPreviousMessageSender && (
-                <header style={{ color: `#${color.toHex()}` }}>
-                  {from}
-                  <div className="badges">
-                    {Boolean(userBadges) && Object.entries(userBadges).map(([badge, version]) => {
-                      const badgeURL = badges[badge].versions[version]
-
-                      if (!badgeURL) {
-                        return null
-                      }
-
-                      return (
-                        <div
-                          key={badge}
-                          className="socket">
-                          <div
-                            className="badge"
-                            style={{
-                              backgroundImage: `url('${badges[badge].versions[version].image_url_1x}')`,
-                            }} />
-                        </div>
-                      )
-                    })}
-                  </div>
-                </header>
-              )}
-
-              <div className="body">
-                {message}
-              </div>
-            </animated.li>
+            <TwitchChatMessage
+              key={message.id}
+              colorCache={colorCache.current}
+              isFromPreviousMessageSender={isFromPreviousMessageSender}
+              message={message}
+              remove={createRemover(message.id)} />
           )
         })}
       </ol>
     </div>
   )
-}
-
-TwitchChat.defaultProps = {
-  useMockServer: false,
-}
-
-TwitchChat.propTypes = {
-  useMockServer: PropTypes.bool,
 }
 
 
