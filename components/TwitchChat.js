@@ -1,5 +1,6 @@
 // Module imports
 import React, {
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -52,6 +53,13 @@ const TwitchChat = props => {
     },
   })
 
+  const addMessage = useCallback(message => {
+    setMessages(oldMessages => ([
+      ...oldMessages,
+      message,
+    ].slice(-MAX_MESSAGES)))
+  }, [setMessages])
+
   useEffect(() => {
     (async () => {
       const responses = await Promise.all([
@@ -78,18 +86,22 @@ const TwitchChat = props => {
         return
       }
 
-      const messageData = {
+      addMessage({
         badges: userstate.badges,
         color: tinycolor(userstate.color),
         from: userstate['display-name'],
         message,
         id: userstate.id,
-      }
-
-      setMessages(oldMessages => ([
-        ...oldMessages,
-        messageData,
-      ].slice(-MAX_MESSAGES)))
+      })
+    },
+    onCheer: (channel, userstate, message) => {
+      addMessage({
+        badges: userstate.badges,
+        color: tinycolor(userstate.color),
+        from: userstate['display-name'],
+        message,
+        id: userstate.id,
+      })
     },
     useMockServer,
   })

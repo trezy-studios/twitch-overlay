@@ -8,33 +8,74 @@
   top: 25vh;
   width: 25vw;
 
-  dt, dd {
-    animation-delay: 10s;
-    animation-duration: 1s;
-    animation-fill-mode: both;
-    animation-name: partial-fade-out;
+  ol {
+    header {
+      align-items: center;
+      background-color: lighten(#1a1a1a, 10%);
+      display: flex;
+      margin-top: 20px;
+      padding: 4px 10px;
+      position: relative;
+
+      .badges {
+        display: flex;
+        height: 100%;
+        margin-left: auto;
+
+        &:after {
+          content: '';
+          display: none;
+          height: 32px;
+          width: 32px;
+        }
+
+        .socket,
+        &:after {
+          --pixel-multiplier: 4;
+          --pixel-size: calc(1px * var(--pixel-multiplier));
+
+          background-color: #1a1a1a;
+          clip-path: polygon(
+            0 var(--pixel-size),
+            var(--pixel-size) var(--pixel-size),
+            var(--pixel-size) 0,
+
+            calc(100% - var(--pixel-size)) 0,
+            calc(100% - var(--pixel-size)) var(--pixel-size),
+            100% var(--pixel-size),
+
+            100% calc(100% - var(--pixel-size)),
+            calc(100% - var(--pixel-size)) calc(100% - var(--pixel-size)),
+            calc(100% - var(--pixel-size)) 100%,
+
+            var(--pixel-size) 100%,
+            var(--pixel-size) calc(100% - var(--pixel-size)),
+            0 calc(100% - var(--pixel-size)),
+          );
+          margin-left: 4px;
+          padding: 4px;
+        }
+
+        .badge {
+          background-repeat: no-repeat;
+          background-size: cover;
+          height: 8px;
+          margin: 12px;
+          transform: scale(4);
+          width: 8px;
+
+          &.mod {
+            background-image: url('/images/moderator-badge.png');
+            background-repeat: no-repeat;
+          }
+        }
+      }
+    }
   }
 
-  dt {
-    position: relative;
-
-    &:after {
-      content: ' says:',
-    }
-
-    &:before {
-      background-color: currentColor;
-      bottom: 0;
-      content: '';
-      height: 1px;
-      left: 0;
-      position: absolute;
-      right: 0;
-      z-index: -1;
-    }
-  }
-
-  dd {
-    margin-left: 2rem;
+  .body {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 4px;
   }
 }
