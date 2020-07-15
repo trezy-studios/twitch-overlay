@@ -7,38 +7,38 @@ import React from 'react'
 
 
 const Alert = props => {
-  const {
-    children,
-    onEnded,
-    type,
-  } = props
+	const {
+		children,
+		onEnded,
+		type,
+	} = props
 
-  return (
-    <div className="alert">
-      <video
-        autoPlay
-        onEnded={onEnded}>
-        <source
-          src={`public/media/${type}-alert.webm`}
-          type="video/webm" />
-        <source
-          src="/media/follow-alert.webm"
-          type="video/webm" />
-      </video>
+	return (
+		<div className="alert">
+			<video
+				autoPlay
+				onEnded={onEnded}>
+				<source
+					src={`public/media/${type}-alert.webm`}
+					type="video/webm" />
+				<source
+					src="/media/follow-alert.webm"
+					type="video/webm" />
+			</video>
 
-      {children}
-    </div>
-  )
+			{children}
+		</div>
+	)
 }
 
 Alert.defaultProps = {
-  onEnded: () => {},
+	onEnded: () => {},
 }
 
 Alert.propTypes = {
-  children: PropTypes.node.isRequired,
-  onEnded: PropTypes.func,
-  type: PropTypes.string.isRequired,
+	children: PropTypes.node.isRequired,
+	onEnded: PropTypes.func,
+	type: PropTypes.string.isRequired,
 }
 
 

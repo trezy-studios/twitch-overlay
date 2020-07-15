@@ -1,6 +1,6 @@
 // Module imports
 import React, {
-  useState,
+	useState,
 } from 'react'
 import PropTypes from 'prop-types'
 
@@ -8,8 +8,8 @@ import PropTypes from 'prop-types'
 
 
 const EventHistoryContext = React.createContext({
-  events: [],
-  addEvent: () => {},
+	events: [],
+	addEvent: () => {},
 })
 
 
@@ -17,33 +17,33 @@ const EventHistoryContext = React.createContext({
 
 
 const EventHistoryContextProvider = props => {
-  const { children } = props
+	const { children } = props
 
-  const [events, setEvents] = useState([])
+	const [events, setEvents] = useState([])
 
-  const addEvent = event => {
-    setEvents(previousEvents => ([
-      event,
-      ...previousEvents,
-    ]))
-  }
+	const addEvent = event => {
+		setEvents(previousEvents => ([
+			event,
+			...previousEvents,
+		]))
+	}
 
-  return (
-    <EventHistoryContext.Provider
-      value={{
-        addEvent,
-        events,
-      }}>
-      {children}
-    </EventHistoryContext.Provider>
-  )
+	return (
+		<EventHistoryContext.Provider
+			value={{
+				addEvent,
+				events,
+			}}>
+			{children}
+		</EventHistoryContext.Provider>
+	)
 }
 
 EventHistoryContextProvider.propTypes = {
-  children: PropTypes.node.isRequired,
+	children: PropTypes.node.isRequired,
 }
 
 export {
-  EventHistoryContext,
-  EventHistoryContextProvider,
+	EventHistoryContext,
+	EventHistoryContextProvider,
 }

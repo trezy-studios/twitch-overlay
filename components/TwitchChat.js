@@ -60,6 +60,33 @@ const TwitchChat = props => {
     ].slice(-MAX_MESSAGES)))
   }, [setMessages])
 
+  const handleChat = useCallback((channel, userstate, message, self) => {
+    const isBot = BOT_NAME_BLACKLIST.includes(userstate['display-name'])
+    const isCommand = message.startsWith('!')
+
+    if (self || isBot || isCommand) {
+      return
+    }
+
+    addMessage({
+      badges: userstate.badges,
+      color: tinycolor(userstate.color),
+      from: userstate['display-name'],
+      message,
+      id: userstate.id,
+    })
+  }, [addMessage])
+
+  const handleCheer = useCallback((channel, userstate, message) => {
+    addMessage({
+      badges: userstate.badges,
+      color: tinycolor(userstate.color),
+      from: userstate['display-name'],
+      message,
+      id: userstate.id,
+    })
+  }, [addMessage])
+
   useEffect(() => {
     (async () => {
       const responses = await Promise.all([
@@ -78,31 +105,8 @@ const TwitchChat = props => {
   }, [])
 
   useTwitchEvents({
-    onChat: (channel, userstate, message, self) => {
-      const isBot = BOT_NAME_BLACKLIST.includes(userstate['display-name'])
-      const isCommand = message.startsWith('!')
-
-      if (self || isBot || isCommand) {
-        return
-      }
-
-      addMessage({
-        badges: userstate.badges,
-        color: tinycolor(userstate.color),
-        from: userstate['display-name'],
-        message,
-        id: userstate.id,
-      })
-    },
-    onCheer: (channel, userstate, message) => {
-      addMessage({
-        badges: userstate.badges,
-        color: tinycolor(userstate.color),
-        from: userstate['display-name'],
-        message,
-        id: userstate.id,
-      })
-    },
+    onChat: handleChat,
+    onCheer: handleCheer,
     useMockServer,
   })
 

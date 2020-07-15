@@ -14,28 +14,28 @@ import { Alert } from './Alert'
 
 
 const BitsAlert = props => {
-  const {
-    bits,
-    onEnded,
-    username,
-  } = props
+	const {
+		bits,
+		onEnded,
+		username,
+	} = props
 
-  return (
-    <Alert
-      data-props={JSON.stringify(props)}
-      type="bits"
-      onEnded={onEnded}>
-      <span>
-        <strong>{username}</strong>{' has cheered '}<strong>{bits}</strong>{`${bits === 1 ? ' bit' : ' bits'}!`}
-      </span>
-    </Alert>
-  )
+	return (
+		<Alert
+			data-props={JSON.stringify(props)}
+			type="bits"
+			onEnded={onEnded}>
+			<span>
+				<strong>{username}</strong>{' has cheered '}<strong>{bits}</strong>{`${bits === 1 ? ' bit' : ' bits'}!`}
+			</span>
+		</Alert>
+	)
 }
 
 BitsAlert.propTypes = {
-  bits: PropTypes.number.isRequired,
-  onEnded: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
+	bits: PropTypes.number.isRequired,
+	onEnded: PropTypes.func.isRequired,
+	username: PropTypes.string.isRequired,
 }
 
 

@@ -14,28 +14,28 @@ import { Alert } from './Alert'
 
 
 const RaidAlert = props => {
-  const {
-    onEnded,
-    username,
-    viewers,
-  } = props
+	const {
+		onEnded,
+		username,
+		viewers,
+	} = props
 
-  return (
-    <Alert
-      data-props={JSON.stringify(props)}
-      type="raid"
-      onEnded={onEnded}>
-      <span>
-        <strong>{username}</strong>{' is raiding with '}<strong>{viewers}</strong>{' potential Codémon!'}
-      </span>
-    </Alert>
-  )
+	return (
+		<Alert
+			data-props={JSON.stringify(props)}
+			type="raid"
+			onEnded={onEnded}>
+			<span>
+				<strong>{username}</strong>{' is raiding with '}<strong>{viewers}</strong>{' potential Codémon!'}
+			</span>
+		</Alert>
+	)
 }
 
 RaidAlert.propTypes = {
-  onEnded: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
-  viewers: PropTypes.string.isRequired,
+	onEnded: PropTypes.func.isRequired,
+	username: PropTypes.string.isRequired,
+	viewers: PropTypes.string.isRequired,
 }
 
 

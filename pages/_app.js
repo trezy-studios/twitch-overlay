@@ -15,15 +15,15 @@ import React from 'react'
 
 
 const App = ({ Component, pageProps }) => (
-  <Component {...pageProps} />
+	<Component {...pageProps} />
 )
 
 App.propTypes = {
-  Component: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.node,
-  ]).isRequired,
-  pageProps: PropTypes.object.isRequired,
+	Component: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.node,
+	]).isRequired,
+	pageProps: PropTypes.object.isRequired,
 }
 
 
