@@ -24,8 +24,8 @@ const Overlay = props => {
 	const { useMockServer } = props
 
 	return (
-		<TwitchContextProvider>
-			<QueueContextProvider>
+		<QueueContextProvider>
+			<TwitchContextProvider>
 				<EventHistoryContextProvider>
 					<TaskInfo />
 					<TwitchChat
@@ -35,8 +35,8 @@ const Overlay = props => {
 						useMockServer={useMockServer} />
 					<EventHistory />
 				</EventHistoryContextProvider>
-			</QueueContextProvider>
-		</TwitchContextProvider>
+			</TwitchContextProvider>
+		</QueueContextProvider>
 	)
 }
 

@@ -1,8 +1,8 @@
 // Module imports
 import React, {
-  useCallback,
-  useContext,
-  useRef,
+	useCallback,
+	useContext,
+	useRef,
 } from 'react'
 
 
@@ -10,7 +10,7 @@ import React, {
 
 
 // Local imports
-import { TwitchChatMessage } from './TwitchChatMessage'
+import { TwitchChatMessageGroup } from './TwitchChatMessageGroup'
 import { TwitchContext } from '../context/TwitchContext'
 
 
@@ -18,35 +18,29 @@ import { TwitchContext } from '../context/TwitchContext'
 
 
 const TwitchChat = () => {
-  const {
-    messages,
-    deleteMessage,
-  } = useContext(TwitchContext)
-  const colorCache = useRef({})
+	const {
+		messageGroups,
+		deleteMessageGroup,
+	} = useContext(TwitchContext)
+	const colorCache = useRef({})
 
-  const createRemover = useCallback(messageID => () => {
-    deleteMessage(messageID)
-  }, [deleteMessage])
+	const createRemover = useCallback(messageGroupID => () => {
+		deleteMessageGroup(messageGroupID)
+	}, [deleteMessageGroup])
 
-  return (
-    <div className="twitch-chat">
-      <ol>
-        {messages.map((message, index) => {
-          const previousMessageSender = messages[index - 1]?.user.name
-          const isFromPreviousMessageSender = (previousMessageSender === message.user.name)
-
-          return (
-            <TwitchChatMessage
-              key={message.id}
-              colorCache={colorCache.current}
-              isFromPreviousMessageSender={isFromPreviousMessageSender}
-              message={message}
-              remove={createRemover(message.id)} />
-          )
-        })}
-      </ol>
-    </div>
-  )
+	return (
+		<div className="twitch-chat">
+			<ol>
+				{messageGroups.map(messageGroup => (
+					<TwitchChatMessageGroup
+						key={messageGroup.id}
+						colorCache={colorCache.current}
+						remove={createRemover(messageGroup.id)}
+						{...messageGroup} />
+				))}
+			</ol>
+		</div>
+	)
 }
 
 

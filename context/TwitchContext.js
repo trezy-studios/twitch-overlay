@@ -2,10 +2,12 @@
 // Module imports
 import React, {
 	useCallback,
+	useContext,
 	useEffect,
 	useState,
 } from 'react'
 import { parse as parseIRCMessage } from 'irc-message'
+import { v4 as uuid } from 'uuid'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import tinycolor from 'tinycolor2'
@@ -22,13 +24,14 @@ import { useFetch } from '../hooks/useFetch'
 
 
 // Local constants
+const MAX_MESSAGE_GROUP_SIZE = 5
 const TwitchContext = React.createContext({
 	badges: {},
-	deleteMessage: () => {},
+	deleteMessageGroup: () => {},
 	events: [],
 	isConnecting: false,
 	isConnected: false,
-	messages: [],
+	messageGroups: [],
 })
 
 
@@ -45,7 +48,7 @@ let socket = null
 const TwitchContextProvider = props => {
 	const { children } = props
 	const [events, setEvents] = useState([])
-	const [messages, setMessages] = useState([])
+	const [messageGroups, setMessageGroups] = useState([])
 	const [isConnecting, setIsConnecting] = useState(true)
 	const [isConnected, setIsConnected] = useState(false)
 
@@ -57,15 +60,30 @@ const TwitchContextProvider = props => {
 	}, [setEvents])
 
 	const addMessage = useCallback(message => {
-		setMessages(oldMessages => ([
-			...oldMessages,
-			message,
-		]))
-	}, [setMessages])
+		setMessageGroups(oldMessageGroups => {
+			const lastMessageGroup = oldMessageGroups[oldMessageGroups.length - 1]
+			const userOwnsLastMessageGroup = lastMessageGroup?.user.name === message.user.name
+			const lastMessageGroupIsFull = lastMessageGroup?.messages.length >= MAX_MESSAGE_GROUP_SIZE
+			const newMessageGroups = [...oldMessageGroups]
 
-	const deleteMessage = useCallback(messageID => {
-		setMessages(oldMessages => oldMessages.filter(({ id }) => (id !== messageID)))
-	}, [setMessages])
+			if (!userOwnsLastMessageGroup || lastMessageGroupIsFull) {
+				newMessageGroups.push({
+					id: uuid(),
+					user: message.user,
+					messages: [message],
+				})
+			} else {
+				lastMessageGroup.messages.push(message)
+				lastMessageGroup.user = message.user
+			}
+
+			return newMessageGroups
+		})
+	}, [setMessageGroups])
+
+	const deleteMessageGroup = useCallback(messageGroupID => {
+		setMessageGroups(oldMessageGroups => oldMessageGroups.filter(({ id }) => (id !== messageGroupID)))
+	}, [setMessageGroups])
 
 	const handlePRIVMSG = useCallback(parsedMessage => {
 		const {
@@ -92,7 +110,7 @@ const TwitchContextProvider = props => {
 				name: tags['display-name'],
 			},
 		})
-	}, [addEvent])
+	}, [addMessage])
 
 	const handleUSERNOTICE = useCallback(parsedMessage => {
 		const {
@@ -189,11 +207,11 @@ const TwitchContextProvider = props => {
 
 	const providerValue = {
 		badges,
-		deleteMessage,
+		deleteMessageGroup,
 		events,
 		isConnecting,
 		isConnected,
-		messages,
+		messageGroups,
 	}
 
 	return (
