@@ -32,22 +32,6 @@ The overlay connects to several different external services for the information 
 1. Copy your `Access Token`
 1. Add your access token to both of your `.env` files as `TILTIFY_ACCESS_TOKEN`
 
-#### Trello
-
-1. To start, you'll need to create an account on [Trello][Trello] if you don't already have one
-1. Create a new board (name doesn't matter)
-1. Add at least two lists toyour board (names don't matter)
-1. Click [here][Get your Trello API key] to get your Trello API key, then click on the `Token` link and then the `Allow` button to get an access token
-1. Add your API key and access token to both of your `.env` files
-
-Once you have your API key and access token, you'll still need to get an ID for whatever list you want to have considered as "In Progress." The cards in this list will show up in the overlay.
-
-1. Send a request to `https://api.trello.com/1/boards` to get a list of all of your boards
-1. Find the board you created and copy its ID
-1. Make a new request to `https://api.trello.com/1/boards/[BOARD_ID]` to get a list of the lists on that board
-1. Find the list you want to consider as "In Progress" and copy its ID
-1. Add the list's ID to both of your `.env` files
-
 #### Twitch
 
 Twitch is, surprisingly, the easiest one to set up. To get a Twitch access token, go to [https://twitchapps.com/tmi/][Twitch: Get an access token] and click `Connect`. Once you've logged into Twitch and authorized the app to access your account, you can copy the new access token into both of your `.env` files.
@@ -58,9 +42,6 @@ Twitch is, surprisingly, the easiest one to set up. To get a Twitch access token
 
 [Tiltify]: https://tiltify.com "Tiltify"
 [Tiltify: Create a new app]: https://tiltify.com/@me/dashboard/account/apps/create "Tiltify: Create a new application"
-
-[Trello]: https://trello.com "Trello"
-[Trello: Get your API key]: https://trello.com/app-key
 
 [Twitch: Get an access token]: https://twitchapps.com/tmi/
 [Twitch: TrezyCodes]: https://twitch.tv/TrezyCodes "TrezyCodes on Twitch"
