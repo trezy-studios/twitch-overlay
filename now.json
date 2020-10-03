@@ -1,18 +1,18 @@
 {
-  "version": 2,
-  "scope": "trezy-studios",
-  "env": {
-    "TILTIFY_ACCESS_TOKEN": "@tiltify-access-token",
-    "TWITCH_ACCESS_TOKEN": "@twitch-access-token",
-    "TWITCH_CHANNEL": "@twitch-channel",
-    "TWITCH_USERNAME": "@twitch-username"
-  },
-  "build": {
-    "env": {
-      "TILTIFY_ACCESS_TOKEN": "@tiltify-access-token",
-      "TWITCH_ACCESS_TOKEN": "@twitch-access-token",
-      "TWITCH_CHANNEL": "@twitch-channel",
-      "TWITCH_USERNAME": "@twitch-username"
-    }
-  }
+	"version": 2,
+	"scope": "trezy-studios",
+	"env": {
+		"TILTIFY_ACCESS_TOKEN": "@tiltify-access-token",
+		"TWITCH_ACCESS_TOKEN": "@twitch-access-token",
+		"TWITCH_CHANNEL": "@twitch-channel",
+		"TWITCH_USERNAME": "@twitch-username"
+	},
+	"build": {
+		"env": {
+			"TILTIFY_ACCESS_TOKEN": "@tiltify-access-token",
+			"TWITCH_ACCESS_TOKEN": "@twitch-access-token",
+			"TWITCH_CHANNEL": "@twitch-channel",
+			"TWITCH_USERNAME": "@twitch-username"
+		}
+	}
 }

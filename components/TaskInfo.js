@@ -2,8 +2,8 @@
 
 // Module imports
 import React, {
-  useEffect,
-  useState,
+	useEffect,
+	useState,
 } from 'react'
 
 
@@ -25,67 +25,67 @@ const trelloAPI = getTrelloService()
 
 
 export const TaskInfo = () => {
-  const [isLoading, setIsLoading] = useState(true)
-  const [tasks, setTasks] = useState([])
+	const [isLoading, setIsLoading] = useState(true)
+	const [tasks, setTasks] = useState([])
 
-  useEffect(() => {
-    (async () => {
-      // Get all of the cards that are currently in progress
-      const cardsResponse = await trelloAPI.get(`/lists/${process.env.TRELLO_LIST_ID}/cards`)
-      const cards = cardsResponse.data.reduce((accumulator, card) => ({
-        ...accumulator,
-        [card.id]: {
-          ...card,
-          checklists: [],
-          completion: 0,
-        },
-      }), {})
+	useEffect(() => {
+		(async () => {
+			// Get all of the cards that are currently in progress
+			const cardsResponse = await trelloAPI.get(`/lists/${process.env.TRELLO_LIST_ID}/cards`)
+			const cards = cardsResponse.data.reduce((accumulator, card) => ({
+				...accumulator,
+				[card.id]: {
+					...card,
+					checklists: [],
+					completion: 0,
+				},
+			}), {})
 
-      // Get checklists for cards that have them
-      const checklistResponses = await Promise.all(Object.values(cards).map(card => {
-        if (card.idChecklists.length) {
-          return card.idChecklists.map(checklistID => trelloAPI.get(`/checklists/${checklistID}`))
-        }
+			// Get checklists for cards that have them
+			const checklistResponses = await Promise.all(Object.values(cards).map(card => {
+				if (card.idChecklists.length) {
+					return card.idChecklists.map(checklistID => trelloAPI.get(`/checklists/${checklistID}`))
+				}
 
-        return null
-      }).flat())
+				return null
+			}).flat())
 
-      // Attach checklist items to their respective cards
-      checklistResponses.forEach(({ data: checklist }) => {
-        const card = cards[checklist.idCard]
+			// Attach checklist items to their respective cards
+			checklistResponses.forEach(({ data: checklist }) => {
+				const card = cards[checklist.idCard]
 
-        card.checklists.push(checklist.checkItems)
-      })
+				card.checklists.push(checklist.checkItems)
+			})
 
-      Object.keys(cards).forEach(cardID => {
-        const card = cards[cardID]
+			Object.keys(cards).forEach(cardID => {
+				const card = cards[cardID]
 
-        if (card.checklists.length) {
-          const allItems = card.checklists.flat()
-          const completedItems = allItems.filter(({ state }) => (state === 'complete'))
+				if (card.checklists.length) {
+					const allItems = card.checklists.flat()
+					const completedItems = allItems.filter(({ state }) => (state === 'complete'))
 
-          card.completion = (completedItems.length / allItems.length)
-        }
-      })
+					card.completion = (completedItems.length / allItems.length)
+				}
+			})
 
-      setTasks(Object.values(cards))
-      setIsLoading(false)
-    })()
-  }, [])
+			setTasks(Object.values(cards))
+			setIsLoading(false)
+		})()
+	}, [])
 
-  return (
-    <div className="task-info">
-      {isLoading && 'Loading...'}
+	return (
+		<div className="task-info">
+			{isLoading && 'Loading...'}
 
-      {!isLoading && (
-        <ul>
-          {tasks.map(task => (
-            <li key={task.id}>
-              {`${task.name} — ${Math.floor(task.completion * 100)}%`}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  )
+			{!isLoading && (
+				<ul>
+					{tasks.map(task => (
+						<li key={task.id}>
+							{`${task.name} — ${Math.floor(task.completion * 100)}%`}
+						</li>
+					))}
+				</ul>
+			)}
+		</div>
+	)
 }

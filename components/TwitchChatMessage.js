@@ -7,21 +7,21 @@ import PropTypes from 'prop-types'
 
 
 const TwitchChatMessage = props => {
-  const {
-    message: {
-      message,
-    },
-  } = props
+	const {
+		message: {
+			message,
+		},
+	} = props
 
-  return (
-    <div className="body">
-      {message}
-    </div>
-  )
+	return (
+		<div className="body">
+			{message}
+		</div>
+	)
 }
 
 TwitchChatMessage.propTypes = {
-  message: PropTypes.object.isRequired,
+	message: PropTypes.object.isRequired,
 }
 
 
