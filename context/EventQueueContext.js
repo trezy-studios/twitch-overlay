@@ -19,9 +19,10 @@ const PRIORITIES = {
 	HIGH: 0,
 }
 const PRIORITY_VALUES = Object.values(PRIORITIES).sort()
-const QueueContext = React.createContext({
-	addItem: () => {},
+const EventQueueContext = React.createContext({
+	addEvent: () => {},
 	currentItem: null,
+	history: [],
 	next: () => {},
 	priorityQueues: {},
 	queue: [],
@@ -31,25 +32,38 @@ const QueueContext = React.createContext({
 
 
 
-const QueueContextProvider = props => {
+const EventQueueContextProvider = props => {
 	const { children } = props
-
 	const [currentItem, setCurrentItem] = useState(null)
+	const [history, setHistory] = useState([])
+
 	const { current: priorityQueues } = useRef(PRIORITY_VALUES.reduce((accumulator, priority) => ({
 		...accumulator,
 		[priority]: [],
 	}), {}))
 
-	const addItem = useCallback((item, priority = PRIORITIES.MEDIUM) => {
+	const addEvent = useCallback((item, priority = PRIORITIES.MEDIUM) => {
+		console.log('addEvent has currentItem', Boolean(currentItem), currentItem)
+
 		if (!currentItem) {
 			return setCurrentItem(item)
 		}
 
 		return priorityQueues[priority].push(item)
-	}, [setCurrentItem])
+	}, [
+		currentItem,
+		setCurrentItem,
+	])
 
 	const next = useCallback(() => {
 		let queueToProcess = null
+
+		if (currentItem) {
+			setHistory(oldHistory => ([
+				currentItem,
+				...oldHistory,
+			]))
+		}
 
 		for (const priority in PRIORITY_VALUES) {
 			if (priorityQueues[priority].length) {
@@ -58,14 +72,21 @@ const QueueContextProvider = props => {
 			}
 		}
 
-		setCurrentItem(queueToProcess?.shift() || null)
-	}, [setCurrentItem])
+		const newItem = queueToProcess?.shift()
+
+		setCurrentItem(newItem || null)
+	}, [
+		currentItem,
+		setCurrentItem,
+		setHistory,
+	])
 
 	return (
-		<QueueContext.Provider
+		<EventQueueContext.Provider
 			value={{
-				addItem,
+				addEvent,
 				currentItem,
+				history,
 				next,
 				priorityQueues,
 				get queue () {
@@ -73,16 +94,16 @@ const QueueContextProvider = props => {
 				},
 			}}>
 			{children}
-		</QueueContext.Provider>
+		</EventQueueContext.Provider>
 	)
 }
 
-QueueContextProvider.propTypes = {
+EventQueueContextProvider.propTypes = {
 	children: PropTypes.node.isRequired,
 }
 
 export {
 	PRIORITIES,
-	QueueContext,
-	QueueContextProvider,
+	EventQueueContext,
+	EventQueueContextProvider,
 }

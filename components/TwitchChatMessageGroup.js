@@ -29,7 +29,6 @@ const BOT_NAME_BLACKLIST = [
 	'PretzelRocks',
 	'Moobot',
 ]
-const CHANNEL_ID = 72632519
 const FADE_DELAY = 5000
 const HIDE_DELAY = 10000
 const NAME_COLOR_LIGHTEN_INCREMENT = 10

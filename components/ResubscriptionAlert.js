@@ -15,12 +15,14 @@ import { Alert } from './Alert'
 
 const ResubscriptionAlert = props => {
 	const {
-		months,
 		onEnded,
-		plan,
-		planName,
-		username,
+		parsedMessage,
+		user,
 	} = props
+
+	const months = parsedMessage.tags['msg-param-months']
+	const plan = parsedMessage.tags['msg-param-sub-plan']
+	const planName = parsedMessage.tags['msg-param-sub-plan-name']
 
 	return (
 		<Alert
@@ -31,7 +33,7 @@ const ResubscriptionAlert = props => {
 				{(plan === 'Prime') && (
 					<>
 						<div>
-							<strong>{username}</strong>{' has subscribed with '}<strong>{'Twitch Prime'}</strong>{'!'}
+							<strong>{user.name}</strong>{' has subscribed with '}<strong>{'Twitch Prime'}</strong>{'!'}
 						</div>
 
 						<div>
@@ -42,7 +44,7 @@ const ResubscriptionAlert = props => {
 
 				{(['1000', '2000', '3000'].includes(plan)) && (
 					<>
-						<strong>{username}</strong>{' has been a '}<strong>{planName}</strong>{` for ${months} months!`}
+						<strong>{user.name}</strong>{' has been a '}<strong>{planName}</strong>{` for ${months} months!`}
 					</>
 				)}
 			</div>
@@ -51,11 +53,9 @@ const ResubscriptionAlert = props => {
 }
 
 ResubscriptionAlert.propTypes = {
-	months: PropTypes.number.isRequired,
 	onEnded: PropTypes.func.isRequired,
-	plan: PropTypes.string.isRequired,
-	planName: PropTypes.string.isRequired,
-	username: PropTypes.string.isRequired,
+	parsedMessage: PropTypes.object.isRequired,
+	user: PropTypes.object.isRequired,
 }
 
 

@@ -17,7 +17,8 @@ import tinycolor from 'tinycolor2'
 
 
 // Local imports
-import { useFetch } from '../hooks/useFetch'
+import { EventQueueContext } from 'context/EventQueueContext'
+import { useFetch } from 'hooks/useFetch'
 
 
 
@@ -28,7 +29,6 @@ const MAX_MESSAGE_GROUP_SIZE = 5
 const TwitchContext = React.createContext({
 	badges: {},
 	deleteMessageGroup: () => {},
-	events: [],
 	isConnecting: false,
 	isConnected: false,
 	messageGroups: [],
@@ -47,17 +47,10 @@ let socket = null
 
 const TwitchContextProvider = props => {
 	const { children } = props
-	const [events, setEvents] = useState([])
 	const [messageGroups, setMessageGroups] = useState([])
 	const [isConnecting, setIsConnecting] = useState(true)
 	const [isConnected, setIsConnected] = useState(false)
-
-	const addEvent = useCallback(event => {
-		setEvents(oldEvents => ([
-			...oldEvents,
-			event,
-		]))
-	}, [setEvents])
+	const { addEvent } = useContext(EventQueueContext)
 
 	const addMessage = useCallback(message => {
 		setMessageGroups(oldMessageGroups => {
@@ -129,8 +122,9 @@ const TwitchContextProvider = props => {
 				name: tags['msg-param-sub-plan-name'],
 				plan: tags['msg-param-sub-plan'],
 			},
-			id: tags.id,
+			id: tags.id || uuid(),
 			message,
+			parsedMessage,
 			timestamp: moment(parseInt(tags['tmi-sent-ts'], 10)),
 			type: tags['msg-id'],
 			user: {
@@ -181,6 +175,25 @@ const TwitchContextProvider = props => {
 		socket.send('NICK justinfan12345')
 		socket.send('JOIN #trezycodes')
 
+		function blep() {
+			setTimeout(() => {
+				const messages = [
+					// 'PRIVMSG trezycodes :extendsub',
+					// 'PRIVMSG trezycodes :giftpaidupgrade',
+					// 'PRIVMSG trezycodes :primepaidupgrade',
+					'PRIVMSG trezycodes :raid',
+					// 'PRIVMSG trezycodes :resubscription',
+					// 'PRIVMSG trezycodes :subgift',
+					'PRIVMSG trezycodes :subscription',
+					`PRIVMSG trezycodes :bits --bitscount ${parseInt(Math.random() * 1000, 10)}`
+				]
+				socket.send(messages[Math.floor(Math.random() * messages.length)])
+				blep()
+			}, Math.random() * 10000)
+		}
+
+		blep()
+
 		setIsConnecting(false)
 		setIsConnected(true)
 	}, [
@@ -208,7 +221,6 @@ const TwitchContextProvider = props => {
 	const providerValue = {
 		badges,
 		deleteMessageGroup,
-		events,
 		isConnecting,
 		isConnected,
 		messageGroups,

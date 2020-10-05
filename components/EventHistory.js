@@ -8,7 +8,7 @@ import React, {
 
 
 // Local imports
-import { EventHistoryContext } from '../context/EventHistoryContext'
+import { EventQueueContext } from '../context/EventQueueContext'
 
 
 
@@ -23,22 +23,22 @@ const MAX_EVENTS_TO_DISPLAY = 7
 
 // eslint-disable-next-line react/jsx-no-literals
 export const EventHistory = () => {
-	const { events } = useContext(EventHistoryContext)
+	const { history } = useContext(EventQueueContext)
 
 	return (
 		<ol className="event-history">
-			{events.slice(0, MAX_EVENTS_TO_DISPLAY).map(event => {
+			{history.slice(0, MAX_EVENTS_TO_DISPLAY).map(event => {
 				const {
 					id,
 					type,
-					username,
+					user,
 				} = event
 
 				return (
 					<li key={id}>
 						<div>
 							<i className={['icon', type].join(' ')} />
-							{username}
+							{user.name}
 						</div>
 					</li>
 				)

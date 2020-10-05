@@ -15,10 +15,12 @@ import { Alert } from './Alert'
 
 const BitsAlert = props => {
 	const {
-		bits,
 		onEnded,
-		username,
+		parsedMessage,
+		user,
 	} = props
+
+	const { bits } = parsedMessage
 
 	return (
 		<Alert
@@ -26,16 +28,16 @@ const BitsAlert = props => {
 			type="bits"
 			onEnded={onEnded}>
 			<span>
-				<strong>{username}</strong>{' has cheered '}<strong>{bits}</strong>{`${bits === 1 ? ' bit' : ' bits'}!`}
+				<strong>{user.name}</strong>{' has cheered '}<strong>{bits}</strong>{`${bits === 1 ? ' bit' : ' bits'}!`}
 			</span>
 		</Alert>
 	)
 }
 
 BitsAlert.propTypes = {
-	bits: PropTypes.number.isRequired,
 	onEnded: PropTypes.func.isRequired,
-	username: PropTypes.string.isRequired,
+	parsedMessage: PropTypes.object.isRequired,
+	user: PropTypes.object.isRequired,
 }
 
 
